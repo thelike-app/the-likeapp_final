@@ -1,81 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LIKE</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@100;300;400;500;700;900&display=swap');
+    
     body {
       background-color: black;
       color: white;
-      font-family: 'Helvetica', sans-serif;
+      font-family: 'Helvetica Neue', Helvetica, sans-serif;
       text-align: center;
       margin: 0;
       padding: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
     }
     h1 {
+      margin-top: 120px; /* %20 aşağı kaydırıldı */
       font-size: 80px; /* %25 büyütüldü */
-      font-weight: normal;
-      margin: 0;
-      margin-bottom: 60px; /* %20 aşağı kaydırıldı */
+      font-family: 'Helvetica Neue', Helvetica, sans-serif;
+      font-weight: 900; /* Condensed Black effect */
+      font-stretch: condensed;
+      letter-spacing: -2px; /* Condensed effect */
+      margin-bottom: 0;
     }
     input {
-      padding: 15px;
+      padding: 10px;
       font-size: 16px;
-      border: 2px solid #333;
-      border-radius: 5px;
-      background-color: #111;
-      color: white;
-      width: 300px;
-      margin-bottom: 20px;
+      width: 280px;
+      border: none;
+      border-radius: 4px;
+      margin-top: 24px; /* %20 artırıldı */
+      text-align: center;
+      position: relative;
     }
     button {
-      padding: 15px 30px;
+      margin-top: 18px; /* %20 artırıldı */
+      padding: 10px 20px;
       font-size: 16px;
-      background-color: #007bff;
-      color: white;
+      background-color: white;
+      color: black;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
-      margin-bottom: 20px;
     }
     button:hover {
-      background-color: #0056b3;
+      background-color: #ccc;
     }
     .tagline {
+      margin-top: 12px; /* %20 artırıldı */
       font-size: 14px;
-      color: #888;
-      margin-bottom: 40px;
+      color: grey;
     }
     .footer {
       position: fixed;
       bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       font-size: 12px;
-      color: #666;
+      color: grey;
     }
     #results {
       margin-top: 30px;
       text-align: left;
       max-width: 1200px;
-      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 20px;
     }
     .player-info {
       background-color: #111;
       padding: 20px;
-      border-radius: 0;
-      margin-bottom: 20px;
       border: 1px solid #333;
+      margin-bottom: 20px;
     }
     .stats-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
-      border-radius: 0;
     }
     .stats-table th, .stats-table td {
       border: 1px solid #333;
@@ -93,7 +95,6 @@
       margin-top: 20px;
       padding: 15px;
       background-color: #111;
-      border-radius: 0;
       border: 1px solid #333;
     }
     .season-stats h3 {
@@ -109,7 +110,6 @@
     .stat-item {
       background-color: #222;
       padding: 10px;
-      border-radius: 0;
     }
     .stat-label {
       font-size: 12px;
@@ -168,8 +168,7 @@
       margin-top: 30px;
       padding: 20px;
       background-color: #111;
-      border-radius: 0;
-      border: 1px solid #333;
+      border: 1px solid white;
     }
     .betting-title {
       display: flex;
@@ -193,7 +192,6 @@
       margin: 10px 0;
       padding: 10px;
       background-color: #222;
-      border-radius: 0;
       border-left: 4px solid white;
       color: white;
     }
@@ -212,6 +210,17 @@
       margin-top: 15px;
       font-size: 11px;
       color: white;
+    }
+    .error-message {
+      color: #ff6b6b;
+      font-size: 14px;
+      text-align: center;
+      margin: 20px auto;
+      max-width: 400px;
+      padding: 10px;
+      background-color: #111;
+      border: 1px solid #333;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -387,559 +396,5 @@
       { name: "Kyle Anderson", team: "MIN", status: "playing", league: "NBA" },
       { name: "Monte Morris", team: "MIN", status: "playing", league: "NBA" },
       { name: "Jordan McLaughlin", team: "MIN", status: "playing", league: "NBA" },
-      { name: "Shake Milton", team: "MIN", status: "playing", league: "NBA" },
-      { name: "Leonard Miller", team: "MIN", status: "playing", league: "NBA" },
-      
-      // Grizzlies
-      { name: "Ja Morant", team: "MEM", status: "playing", league: "NBA" },
-      { name: "Jaren Jackson Jr.", team: "MEM", status: "playing", league: "NBA" },
-      { name: "Desmond Bane", team: "MEM", status: "playing", league: "NBA" },
-      { name: "Marcus Smart", team: "MEM", status: "playing", league: "NBA" },
-      { name: "Steven Adams", team: "MEM", status: "playing", league: "NBA" },
-      { name: "Luke Kennard", team: "MEM", status: "playing", league: "NBA" },
-      { name: "Ziaire Williams", team: "MEM", status: "playing", league: "NBA" },
-      { name: "Brandon Clarke", team: "MEM", status: "playing", league: "NBA" },
-      { name: "Xavier Tillman", team: "MEM", status: "playing", league: "NBA" },
-      { name: "John Konchar", team: "MEM", status: "playing", league: "NBA" },
-      { name: "Derrick Rose", team: "MEM", status: "playing", league: "NBA" },
-      { name: "GG Jackson", team: "MEM", status: "playing", league: "NBA" },
-      
-      // Pelicans
-      { name: "Zion Williamson", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Brandon Ingram", team: "NOP", status: "playing", league: "NBA" },
-      { name: "CJ McCollum", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Jonas Valanciunas", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Herbert Jones", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Trey Murphy III", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Jose Alvarado", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Larry Nance Jr.", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Dyson Daniels", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Jordan Hawkins", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Naji Marshall", team: "NOP", status: "playing", league: "NBA" },
-      { name: "Matt Ryan", team: "NOP", status: "playing", league: "NBA" },
-      
-      // Thunder
-      { name: "Shai Gilgeous-Alexander", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Josh Giddey", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Chet Holmgren", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Jalen Williams", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Lu Dort", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Isaiah Joe", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Cason Wallace", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Jaylin Williams", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Kenrich Williams", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Davis Bertans", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Vasilije Micic", team: "OKC", status: "playing", league: "NBA" },
-      { name: "Ousmane Dieng", team: "OKC", status: "playing", league: "NBA" },
-      
-      // Cavaliers
-      { name: "Donovan Mitchell", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Darius Garland", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Jarrett Allen", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Evan Mobley", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Caris LeVert", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Max Strus", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Georges Niang", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Isaac Okoro", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Dean Wade", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Sam Merrill", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Tristan Thompson", team: "CLE", status: "playing", league: "NBA" },
-      { name: "Craig Porter Jr.", team: "CLE", status: "playing", league: "NBA" },
-      
-      // WNBA Players - All Teams (200+ players)
-      // Las Vegas Aces
-      { name: "A'ja Wilson", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Kelsey Plum", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Chelsea Gray", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Jackie Young", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Candace Parker", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Kiah Stokes", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Cayla George", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Alysha Clark", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Tiffany Hayes", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Kate Martin", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Megan Gustafson", team: "LVA", status: "playing", league: "WNBA" },
-      { name: "Sydney Colson", team: "LVA", status: "playing", league: "WNBA" },
-      
-      // New York Liberty
-      { name: "Breanna Stewart", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Sabrina Ionescu", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Jonquel Jones", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Betnijah Laney", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Courtney Vandersloot", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Kayla Thornton", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Nyara Sabally", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Marine Johannes", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Kennedy Burke", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Ivana Dojkic", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Leonie Fiebich", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Marquesha Davis", team: "NYL", status: "playing", league: "WNBA" },
-      
-      // Seattle Storm
-      { name: "Jewell Loyd", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Nneka Ogwumike", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Skylar Diggins-Smith", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Gabby Williams", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Ezi Magbegor", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Jordan Horston", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Victoria Vivians", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Dulcy Fankam Mendjiadeu", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Joyner Holmes", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Kia Vaughn", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Sami Whitcomb", team: "SEA", status: "playing", league: "WNBA" },
-      { name: "Mercedes Russell", team: "SEA", status: "playing", league: "WNBA" },
-      
-      // Indiana Fever
-      { name: "Caitlin Clark", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Kelsey Mitchell", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Aliyah Boston", team: "IND", status: "playing", league: "WNBA" },
-      { name: "NaLyssa Smith", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Erica Wheeler", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Lexie Hull", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Katie Lou Samuelson", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Temi Fagbenle", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Kristy Wallace", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Grace Berger", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Damiris Dantas", team: "IND", status: "playing", league: "WNBA" },
-      { name: "Maya Caldwell", team: "IND", status: "playing", league: "WNBA" },
-      
-      // Chicago Sky
-      { name: "Angel Reese", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Kahleah Copper", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Marina Mabrey", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Diamond DeShields", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Elizabeth Williams", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Chennedy Carter", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Lindsay Allen", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Dana Evans", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Michaela Onyenwere", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Isabelle Harrison", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Kamilla Cardoso", team: "CHI", status: "playing", league: "WNBA" },
-      { name: "Moriah Jefferson", team: "CHI", status: "playing", league: "WNBA" },
-      
-      // Minnesota Lynx
-      { name: "Napheesa Collier", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Courtney Williams", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Kayla McBride", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Bridget Carleton", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Dorka Juhász", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Alanna Smith", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Cecilia Zandalasini", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Natisha Hiedeman", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Diamond Miller", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Myisha Hines-Allen", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Olivia Époupa", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Jessica Breland", team: "MIN", status: "playing", league: "WNBA" },
-      
-      // Connecticut Sun
-      { name: "Alyssa Thomas", team: "CON", status: "playing", league: "WNBA" },
-      { name: "DeWanna Bonner", team: "CON", status: "playing", league: "WNBA" },
-      { name: "DiJonai Carrington", team: "CON", status: "playing", league: "WNBA" },
-      { name: "Tyasha Harris", team: "CON", status: "playing", league: "WNBA" },
-      { name: "Olivia Nelson-Ododa", team: "CON", status: "playing", league: "WNBA" },
-      { name: "Brionna Jones", team: "CON", status: "playing", league: "WNBA" },
-      { name: "Veronica Burton", team: "CON", status: "playing", league: "WNBA" },
-      { name: "Rachel Banham", team: "CON", status: "playing", league: "WNBA" },
-      { name: "Astou Ndour", team: "CON", status: "playing", league: "WNBA" },
-      { name: "Moriah Jefferson", team: "CON", status: "playing", league: "WNBA" },
-      { name: "Abbey Hsu", team: "CON", status: "playing", league: "WNBA" },
-      { name: "Leigha Brown", team: "CON", status: "playing", league: "WNBA" },
-      
-      // Atlanta Dream
-      { name: "Tina Charles", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Rhyne Howard", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Allisha Gray", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Nia Coffey", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Cheyenne Parker-Tyus", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Haley Jones", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Jordin Canada", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Maya Caldwell", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Laeticia Amihere", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Naz Hillmon", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Aerial Powers", team: "ATL", status: "playing", league: "WNBA" },
-      { name: "Lorela Cubaj", team: "ATL", status: "playing", league: "WNBA" },
-      
-      // Washington Mystics
-      { name: "Ariel Atkins", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Brittney Sykes", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Stefanie Dolson", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Julie Vanloo", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Shatori Walker-Kimbrough", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Aaliyah Edwards", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Jade Melbourne", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Karlie Samuelson", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Sika Koné", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Emily Engstler", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "DiDi Richards", team: "WAS", status: "playing", league: "WNBA" },
-      { name: "Myisha Hines-Allen", team: "WAS", status: "playing", league: "WNBA" },
-      
-      // Phoenix Mercury
-      { name: "Diana Taurasi", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Kahleah Copper", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Natasha Cloud", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Rebecca Allen", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Mikiah Herbert Harrigan", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Sophie Cunningham", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Celeste Taylor", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Monique Billings", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Natasha Mack", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Liz Dixon", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Amy Atwell", team: "PHX", status: "playing", league: "WNBA" },
-      { name: "Charisma Osborne", team: "PHX", status: "playing", league: "WNBA" },
-      
-      // Los Angeles Sparks
-      { name: "Dearica Hamby", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Kia Vaughn", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Layshia Clarendon", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Rickea Jackson", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Stephanie Talbot", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Azurá Stevens", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Lexie Brown", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Aari McDonald", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Crystal Dangerfield", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Li Yueru", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Rae Burrell", team: "LAS", status: "playing", league: "WNBA" },
-      { name: "Kia Vaughn", team: "LAS", status: "playing", league: "WNBA" },
-      
-      // Dallas Wings
-      { name: "Arike Ogunbowale", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Satou Sabally", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Natasha Howard", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Odyssey Sims", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Teaira McCowan", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Maddy Siegrist", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Jacy Sheldon", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Monique Billings", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Kalani Brown", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Sevgi Uzun", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Stephanie Soares", team: "DAL", status: "playing", league: "WNBA" },
-      { name: "Lou Lopez Sénéchal", team: "DAL", status: "playing", league: "WNBA" }
-    ];
-
-    // Real NBA team matchups and schedules
-    const teamMatchups = {
-      "LAL": ["GSW", "PHX", "DEN", "LAC", "SAC", "POR", "UTA", "SAS"],
-      "GSW": ["LAL", "PHX", "DEN", "LAC", "SAC", "POR", "UTA", "SAS"],
-      "PHX": ["LAL", "GSW", "DEN", "LAC", "SAC", "POR", "UTA", "SAS"],
-      "MIL": ["BOS", "PHI", "NYK", "BRK", "TOR", "ATL", "MIA", "ORL"],
-      "DAL": ["SAS", "HOU", "MEM", "NOP", "OKC", "DEN", "MIN", "UTA"],
-      "BOS": ["MIL", "PHI", "NYK", "BRK", "TOR", "ATL", "MIA", "ORL"],
-      "DEN": ["LAL", "GSW", "PHX", "LAC", "SAC", "POR", "UTA", "MIN"],
-      "PHI": ["BOS", "MIL", "NYK", "BRK", "TOR", "ATL", "MIA", "WAS"],
-      "LAC": ["LAL", "GSW", "PHX", "DEN", "SAC", "POR", "UTA", "SAS"],
-      "MIA": ["BOS", "PHI", "ATL", "ORL", "CHA", "WAS", "NYK", "BRK"],
-      "MIN": ["DEN", "OKC", "MEM", "SAS", "DAL", "HOU", "NOP", "UTA"],
-      "MEM": ["DAL", "SAS", "HOU", "NOP", "OKC", "MIN", "DEN", "UTA"],
-      "NOP": ["SAS", "HOU", "MEM", "DAL", "OKC", "ATL", "MIA", "ORL"],
-      "OKC": ["DEN", "MIN", "MEM", "SAS", "DAL", "HOU", "NOP", "UTA"],
-      "CLE": ["DET", "IND", "CHI", "MIL", "TOR", "BOS", "NYK", "ATL"],
-      
-      // WNBA team matchups
-      "LVA": ["SEA", "PHX", "MIN", "CHI", "IND", "CON", "NYL", "ATL"],
-      "NYL": ["LVA", "CON", "IND", "CHI", "ATL", "WAS", "MIN", "SEA"],
-      "SEA": ["LVA", "PHX", "MIN", "NYL", "IND", "CHI", "CON", "ATL"],
-      "IND": ["CHI", "NYL", "CON", "ATL", "WAS", "LVA", "SEA", "MIN"],
-      "CHI": ["IND", "NYL", "CON", "ATL", "MIN", "WAS", "LVA", "SEA"],
-      "CON": ["NYL", "IND", "CHI", "ATL", "WAS", "LVA", "SEA", "MIN"],
-      "ATL": ["WAS", "NYL", "IND", "CHI", "CON", "LVA", "SEA", "MIN"],
-      "WAS": ["ATL", "NYL", "IND", "CHI", "CON", "LVA", "SEA", "MIN"]
-    };
-
-    let currentPage = 1;
-    const pageSize = 20;
-
-    // Autocomplete functionality - 1 harften başlat
-    document.getElementById('playerInput').addEventListener('input', function(e) {
-      const query = e.target.value.toLowerCase();
-      const suggestions = document.getElementById('suggestions');
-      
-      if (query.length < 1) { // 1 harften başlat
-        suggestions.style.display = 'none';
-        return;
-      }
-
-      const matches = playerDatabase.filter(player => 
-        player.name.toLowerCase().includes(query)
-      ).slice(0, 15); // Daha fazla öneri göster
-
-      if (matches.length > 0) {
-        suggestions.innerHTML = matches.map(player => `
-          <div class="suggestion-item" onclick="selectPlayer('${player.name}')">
-            <span>${player.name} (${player.team}${player.league ? ' - ' + player.league : ''})</span>
-            <div class="status-icon ${player.status}">
-              ${player.status === 'playing' ? '✓' : '✗'}
-            </div>
-          </div>
-        `).join('');
-        suggestions.style.display = 'block';
-      } else {
-        suggestions.style.display = 'none';
-      }
-    });
-
-    function selectPlayer(playerName) {
-      document.getElementById('playerInput').value = playerName;
-      document.getElementById('suggestions').style.display = 'none';
-    }
-
-    // Hide suggestions when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('#playerInput') && !e.target.closest('#suggestions')) {
-        document.getElementById('suggestions').style.display = 'none';
-      }
-    });
-
-    async function analyzePlayer() {
-      const playerName = document.getElementById("playerInput").value.trim();
-      if (!playerName) {
-        alert("Please enter a player name");
-        return;
-      }
-
-      document.getElementById("results").innerHTML = "Loading current player statistics...";
-
-      try {
-        // Check if player is in WNBA database
-        const wnbaPlayer = playerDatabase.find(p => 
-          p.league === "WNBA" && 
-          (p.name.toLowerCase().includes(playerName.toLowerCase()) ||
-           playerName.toLowerCase().includes(p.name.toLowerCase()))
-        );
-
-        let player = null;
-        
-        if (wnbaPlayer) {
-          // Try WNBA API first for WNBA players
-          try {
-            const wnbaResponse = await fetch(`https://api.server.nbaapi.com/api/wnba/playertotals?page=1&pageSize=100&season=2024`);
-            if (wnbaResponse.ok) {
-              const wnbaData = await wnbaResponse.json();
-              player = wnbaData.data.find(p => 
-                p.playerName.toLowerCase().includes(playerName.toLowerCase()) ||
-                playerName.toLowerCase().includes(p.playerName.toLowerCase())
-              );
-              if (player) {
-                player.league = "WNBA";
-              }
-            }
-          } catch (wnbaError) {
-            console.log('WNBA API error:', wnbaError);
-          }
-        }
-
-        if (!player) {
-          // Try NBA API for current season (2025)
-          let response = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=1&pageSize=100&season=2025`);
-          
-          if (!response.ok) {
-            // Fallback to 2024 if 2025 not available
-            response = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=1&pageSize=100&season=2024`);
-          }
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const data = await response.json();
-          
-          // Find player by name (case insensitive)
-          player = data.data.find(p => 
-            p.playerName.toLowerCase().includes(playerName.toLowerCase()) ||
-            playerName.toLowerCase().includes(p.playerName.toLowerCase())
-          );
-
-          if (!player) {
-            // Try to search in more pages for comprehensive coverage
-            let found = false;
-            for (let page = 2; page <= 20 && !found; page++) {
-              const nextResponse = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=${page}&pageSize=100&season=2025`);
-              if (nextResponse.ok) {
-                const nextData = await nextResponse.json();
-                const foundPlayer = nextData.data.find(p => 
-                  p.playerName.toLowerCase().includes(playerName.toLowerCase()) ||
-                  playerName.toLowerCase().includes(p.playerName.toLowerCase())
-                );
-                if (foundPlayer) {
-                  player = foundPlayer;
-                  found = true;
-                }
-              }
-            }
-          }
-        }
-
-        if (!player) {
-          document.getElementById("results").innerHTML = `Player "${playerName}" not found. Please try a different name or check spelling.`;
-          return;
-        }
-
-        displayPlayerStats(player);
-
-      } catch (error) {
-        console.error('Error fetching player data:', error);
-        document.getElementById("results").innerHTML = "Failed to fetch current player stats. Please try again.";
-      }
-    }
-
-    function displayPlayerStats(player) {
-      const resultsDiv = document.getElementById('results');
-      
-      // Player info
-      const playerInfo = `
-        <div class="player-info">
-          <h2>${player.playerName}</h2>
-          <p>Team: ${player.teamAbbreviation || 'N/A'} | Position: ${player.position || 'N/A'} | Age: ${player.age || 'N/A'}</p>
-          <p>Games Played: ${player.gamesPlayed || 'N/A'} | Current Season: ${player.season || '2024-25'}</p>
-        </div>
-      `;
-
-      // Generate last 10 games with realistic team matchups
-      const teamAbbr = player.teamAbbreviation || 'LAL';
-      const opponents = teamMatchups[teamAbbr] || ['GSW', 'PHX', 'DEN', 'LAC', 'SAC'];
-      const gameData = [];
-      
-      for (let i = 0; i < 10; i++) {
-        const opponent = opponents[i % opponents.length];
-        const isHome = Math.random() > 0.5;
-        const gameLocation = isHome ? `vs ${opponent}` : `@ ${opponent}`;
-        
-        // Generate realistic stats based on player averages
-        const basePoints = player.points || 20;
-        const baseRebounds = player.totalRebounds || 7;
-        const baseAssists = player.assists || 5;
-        const base3PM = player.threeMade || 2;
-        
-        const points = Math.max(0, Math.round(basePoints + (Math.random() - 0.5) * 10));
-        const rebounds = Math.max(0, Math.round(baseRebounds + (Math.random() - 0.5) * 4));
-        const assists = Math.max(0, Math.round(baseAssists + (Math.random() - 0.5) * 4));
-        const threeMade = Math.max(0, Math.round(base3PM + (Math.random() - 0.5) * 2));
-        const threeAttempted = Math.max(threeMade, threeMade + Math.round(Math.random() * 3));
-        
-        gameData.push({
-          game: gameLocation,
-          points: points,
-          rebounds: rebounds,
-          assists: assists,
-          threePointers: `${threeMade}/${threeAttempted}`
-        });
-      }
-
-      // Create table
-      const tableHTML = `
-        <table class="stats-table">
-          <thead>
-            <tr>
-              <th>Recent Games</th>
-              <th>Points</th>
-              <th>Rebounds</th>
-              <th>Assists</th>
-              <th>3-Pointers</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${gameData.map(game => `
-              <tr>
-                <td>${game.game}</td>
-                <td>${game.points}</td>
-                <td>${game.rebounds}</td>
-                <td>${game.assists}</td>
-                <td>${game.threePointers}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      `;
-
-      // Season averages and shooting stats
-      const seasonStats = `
-        <div class="season-stats">
-          <h3 style="color: white;">Season Averages & Shooting Stats</h3>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <div class="stat-label">PPG</div>
-              <div class="stat-value">${player.points || 'N/A'}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">RPG</div>
-              <div class="stat-value">${player.totalRebounds || 'N/A'}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">APG</div>
-              <div class="stat-value">${player.assists || 'N/A'}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">3PM</div>
-              <div class="stat-value">${player.threeMade || 'N/A'}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">MPG</div>
-              <div class="stat-value">${player.minutes ? (player.minutes).toFixed(1) : 'N/A'}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">FG%</div>
-              <div class="stat-value">${player.fieldGoalPercentage ? (player.fieldGoalPercentage * 100).toFixed(1) + '%' : 'N/A'}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">3P%</div>
-              <div class="stat-value">${player.threePercentage ? (player.threePercentage * 100).toFixed(1) + '%' : 'N/A'}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">FT%</div>
-              <div class="stat-value">${player.freeThrowPercentage ? (player.freeThrowPercentage * 100).toFixed(1) + '%' : 'N/A'}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">FGM/A</div>
-              <div class="stat-value">${player.fieldGoalsMade || 'N/A'}/${player.fieldGoalsAttempted || 'N/A'}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">Games</div>
-              <div class="stat-value">${player.gamesPlayed || 'N/A'}</div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Betting recommendations
-      const bettingSection = `
-        <div class="betting-section">
-          <div class="betting-title">
-            <svg class="bulb-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/>
-            </svg>
-          </div>
-          <div class="betting-recommendation">
-            <strong>Points:</strong> <span class="confidence">${Math.floor(Math.random() * 30) + 65}% confidence</span> for ${Math.floor((player.points || 20) * 0.8)}+ points<br>
-            <span class="odds">Recommended: Over ${Math.floor((player.points || 20) * 0.8)} points</span>
-          </div>
-          <div class="betting-recommendation">
-            <strong>Rebounds:</strong> <span class="confidence">${Math.floor(Math.random() * 30) + 65}% confidence</span> for ${Math.floor((player.totalRebounds || 7) * 0.7)}+ rebounds<br>
-            <span class="odds">Recommended: Over ${Math.floor((player.totalRebounds || 7) * 0.7)} rebounds</span>
-          </div>
-          <div class="betting-recommendation">
-            <strong>Assists:</strong> <span class="confidence">${Math.floor(Math.random() * 30) + 65}% confidence</span> for ${Math.floor((player.assists || 5) * 0.8)}+ assists<br>
-            <span class="odds">Recommended: Over ${Math.floor((player.assists || 5) * 0.8)} assists</span>
-          </div>
-          <div class="betting-recommendation">
-            <strong>3-Pointers:</strong> <span class="confidence">${Math.floor(Math.random() * 30) + 65}% confidence</span> for ${Math.floor((player.threeMade || 2) * 0.7)}+ three-pointers<br>
-            <span class="odds">Recommended: Over ${Math.floor((player.threeMade || 2) * 0.7)} three-pointers</span>
-          </div>
-          <div class="betting-footer">
-            * Analysis based on current season performance and recent form<br>
-            * Recommendations optimized for betting success | Always gamble responsibly
-          </div>
-        </div>
-      `;
-
-      resultsDiv.innerHTML = playerInfo + tableHTML + seasonStats + bettingSection;
-    }
-
-    // Enter key support
-    document.getElementById('playerInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        analyzePlayer();
-      }
-    });
-  </script>
-</body>
-</html>
-
+      { nam
+(Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
