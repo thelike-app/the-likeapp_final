@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LIKE</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Helvetica, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      margin-top: 80px;
+      font-size: 64px;
+      letter-spacing: 2px;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 280px;
+      border: none;
+      border-radius: 4px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: white;
+      color: black;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ccc;
+    }
+    .tagline {
+      margin-top: 10px;
+      font-size: 14px;
+      color: grey;
+    }
+    .footer {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      font-size: 12px;
+      color: grey;
+    }
+    #results {
+      margin-top: 30px;
+      white-space: pre-wrap;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 14px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>LIKE</h1>
+  <input type="text" id="playerInput" placeholder="Player name"/>
+  <br/>
+  <button onclick="analyzePlayer()">ANALYZE</button>
+  <div class="tagline">Ask less. Get more.</div>
+
+  <div id="results"></div>
+
+  <div class="footer">
+    We don’t care who you are.
+  </div>
+
+  <script>
+    async function analyzePlayer() {
+      const playerName = document.getElementById("playerInput").value.trim();
+      if (!playerName) {
+        alert("Please enter a player name");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/sports-stats?player=${encodeURIComponent(playerName)}`);
+        const data = await response.json();
+
+        if (data.error) {
+          document.getElementById("results").innerText = data.error;
+        } else {
+          let statsText = `Player: ${data.athlete.name}\n`;
+          statsText += `Team: ${data.athlete.team}\n`;
+          statsText += `Position: ${data.athlete.position}\n`;
+          statsText += `Sport: ${data.athlete.sport}\n\n`;
+          statsText += `Recent Stats:\n`;
+
+          if (data.statistics && data.statistics.recent_events && data.statistics.recent_events.length > 0) {
+            data.statistics.recent_events.forEach(event => {
+              statsText += `  Date: ${event.date}, Opponent: ${event.opponent}, Points: ${event.points}, Rebounds: ${event.rebounds}, Assists: ${event.assists}, Result: ${event.result}\n`;
+            });
+          } else {
+            statsText += "  No recent event statistics available.\n";
+          }
+          document.getElementById("results").innerText = statsText;
+        }
+      } catch (error) {
+        console.error("Error fetching player stats:", error);
+        document.getElementById("results").innerText = "Failed to fetch athlete statistics. Please try again.";
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+
