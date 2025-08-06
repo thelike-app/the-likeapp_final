@@ -77,7 +77,7 @@
       padding: 8px;
       text-align: center;
       font-size: 12px;
-      border-radius: 0; /* Köşeleri keskin yap */
+      border-radius: 0; /* Köşeleri keskin */
     }
     .stats-table th {
       background-color: #222;
@@ -97,13 +97,13 @@
       margin-top: 20px;
       padding: 15px;
       background-color: #111;
-      border-radius: 0; /* Köşeleri keskin yap */
+      border-radius: 0; /* Köşeleri keskin */
       border: 1px solid #333;
       text-align: center;
     }
     .season-stats h3 {
       margin-top: 0;
-      color: #6bb6ff; /* Soluk mavi renk */
+      color: white; /* Beyaz renk */
     }
     .season-stats-row {
       display: flex;
@@ -170,7 +170,7 @@
       margin-top: 30px;
       padding: 20px;
       background-color: #111;
-      border-radius: 0; /* Köşeleri keskin yap */
+      border-radius: 0; /* Köşeleri keskin */
       border: 1px solid #333;
     }
     .betting-title {
@@ -180,37 +180,35 @@
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 15px;
-      color: #6bb6ff; /* Soluk mavi renk */
     }
     .bulb-icon {
       width: 20px;
       height: 20px;
-      margin-right: 10px;
-      filter: brightness(0) invert(1); /* Beyaz renk için */
+      fill: white;
     }
     .betting-recommendation {
       margin: 10px 0;
       padding: 10px;
       background-color: #222;
-      border-radius: 0; /* Köşeleri keskin yap */
-      border-left: 4px solid #6bb6ff; /* Soluk mavi renk */
-      color: #6bb6ff; /* Tüm yazılar soluk mavi */
+      border-radius: 0; /* Köşeleri keskin */
+      border-left: 4px solid white; /* Beyaz border */
+      color: white; /* Beyaz yazı */
     }
     .betting-recommendation strong {
-      color: #6bb6ff; /* Soluk mavi renk */
+      color: white; /* Beyaz renk */
     }
     .confidence {
-      color: #6bb6ff; /* Soluk mavi renk */
+      color: white; /* Beyaz renk */
       font-weight: bold;
     }
     .odds {
-      color: #6bb6ff; /* Soluk mavi renk */
+      color: white; /* Beyaz renk */
       font-size: 12px;
     }
     .betting-footer {
       margin-top: 15px;
       font-size: 11px;
-      color: #6bb6ff; /* Soluk mavi renk */
+      color: white; /* Beyaz renk */
     }
   </style>
 </head>
@@ -465,5 +463,11 @@
       resultHTML += `<div class="stat-item"><div class="stat-label">RPG</div><div class="stat-value">${avgRebounds.toFixed(1)}</div></div>`;
       resultHTML += `<div class="stat-item"><div class="stat-label">APG</div><div class="stat-value">${avgAssists.toFixed(1)}</div></div>`;
       resultHTML += `<div class="stat-item"><div class="stat-label">3PM</div><div class="stat-value">${avgThrees.toFixed(1)}</div></div>`;
-      resultHTML += `<div class="stat-item"><div class="stat-label">MPG</div><div class="stat-value">${(player.minutes / player.games).toFixed(1)}
+      resultHTML += `<div class="stat-item"><div class="stat-label">MPG</div><div class="stat-value">${(player.minutes / player.games).toFixed(1)}</div></div>`;
+      resultHTML += `</div>`;
+      
+      resultHTML += `<div class="season-stats-row">`;
+      resultHTML += `<div class="stat-item"><div class="stat-label">FG%</div
 (Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
+
+
