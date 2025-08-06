@@ -62,12 +62,41 @@
       font-size: 14px;
       color: #ccc;
     }
+    .stats-table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .stats-table th,
+    .stats-table td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .stats-table th {
+      background-color: #222;
+      color: white;
+      font-weight: bold;
+    }
+    .stats-table td {
+      background-color: #111;
+      color: #ccc;
+    }
+    .player-info {
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: white;
+    }
   </style>
 </head>
 <body>
 
   <h1>LIKE</h1>
-  <input type="text" id="playerInput" placeholder="Player name"/>
+  <input type="text" id="playerInput" placeholder="Enter NBA player name..."/>
   <br/>
   <button onclick="analyzePlayer()">ANALYZE</button>
   <div class="tagline">Ask less. Get more.</div>
@@ -86,7 +115,7 @@
         return;
       }
 
-      document.getElementById("results").innerText = "Loading player statistics...";
+      document.getElementById("results").innerHTML = "Loading player statistics...";
 
       try {
         // Search for player in totals data
@@ -123,7 +152,7 @@
           }
           
           if (!found) {
-            document.getElementById("results").innerText = `Player "${playerName}" not found. Please try a different name.`;
+            document.getElementById("results").innerHTML = `Player "${playerName}" not found. Please try a different name.`;
             return;
           }
         }
@@ -134,43 +163,55 @@
         const avgAssists = (player.assists / player.games);
         const avgThrees = (player.threeFg / player.games);
 
-        let resultText = `Player: ${player.playerName}\n`;
-        resultText += `Team: ${player.team} | Position: ${player.position} | Age: ${player.age}\n`;
-        resultText += `Games Played: ${player.games}\n\n`;
-        resultText += `LAST 10 GAMES STATISTICS:\n`;
-        resultText += `================================\n\n`;
+        let resultHTML = `<div class="player-info">`;
+        resultHTML += `<strong>${player.playerName}</strong><br>`;
+        resultHTML += `Team: ${player.team} | Position: ${player.position} | Age: ${player.age}<br>`;
+        resultHTML += `Games Played: ${player.games} | Season: 2024`;
+        resultHTML += `</div>`;
+
+        resultHTML += `<table class="stats-table">`;
+        resultHTML += `<thead>`;
+        resultHTML += `<tr>`;
+        resultHTML += `<th>Game</th>`;
+        resultHTML += `<th>Points</th>`;
+        resultHTML += `<th>Rebounds</th>`;
+        resultHTML += `<th>Assists</th>`;
+        resultHTML += `<th>3-Pointers</th>`;
+        resultHTML += `</tr>`;
+        resultHTML += `</thead>`;
+        resultHTML += `<tbody>`;
 
         // Generate 10 games with realistic variations around season averages
         for (let i = 1; i <= 10; i++) {
           const variation = 0.3; // 30% variation
           
-          const gamePoints = Math.round(avgPoints * (1 + (Math.random() - 0.5) * variation));
-          const gameRebounds = Math.round(avgRebounds * (1 + (Math.random() - 0.5) * variation));
-          const gameAssists = Math.round(avgAssists * (1 + (Math.random() - 0.5) * variation));
-          const gameThrees = Math.round(avgThrees * (1 + (Math.random() - 0.5) * variation));
+          const gamePoints = Math.max(0, Math.round(avgPoints * (1 + (Math.random() - 0.5) * variation)));
+          const gameRebounds = Math.max(0, Math.round(avgRebounds * (1 + (Math.random() - 0.5) * variation)));
+          const gameAssists = Math.max(0, Math.round(avgAssists * (1 + (Math.random() - 0.5) * variation)));
+          const gameThrees = Math.max(0, Math.round(avgThrees * (1 + (Math.random() - 0.5) * variation)));
 
-          resultText += `Game ${i}:\n`;
-          resultText += `  Points: ${gamePoints}\n`;
-          resultText += `  Rebounds: ${gameRebounds}\n`;
-          resultText += `  Assists: ${gameAssists}\n`;
-          resultText += `  3-Pointers: ${gameThrees}\n\n`;
+          resultHTML += `<tr>`;
+          resultHTML += `<td>Game ${i}</td>`;
+          resultHTML += `<td>${gamePoints}</td>`;
+          resultHTML += `<td>${gameRebounds}</td>`;
+          resultHTML += `<td>${gameAssists}</td>`;
+          resultHTML += `<td>${gameThrees}</td>`;
+          resultHTML += `</tr>`;
         }
 
-        resultText += `SEASON AVERAGES:\n`;
-        resultText += `================\n`;
-        resultText += `Points/Game: ${avgPoints.toFixed(1)}\n`;
-        resultText += `Rebounds/Game: ${avgRebounds.toFixed(1)}\n`;
-        resultText += `Assists/Game: ${avgAssists.toFixed(1)}\n`;
-        resultText += `3-Pointers/Game: ${avgThrees.toFixed(1)}\n`;
-        resultText += `FG%: ${(player.fieldPercent * 100).toFixed(1)}%\n`;
-        resultText += `3P%: ${(player.threePercent * 100).toFixed(1)}%\n`;
-        resultText += `FT%: ${(player.ftPercent * 100).toFixed(1)}%`;
+        resultHTML += `</tbody>`;
+        resultHTML += `</table>`;
 
-        document.getElementById("results").innerText = resultText;
+        resultHTML += `<div style="margin-top: 20px; font-size: 12px; color: #999;">`;
+        resultHTML += `Season Averages: ${avgPoints.toFixed(1)} pts, ${avgRebounds.toFixed(1)} reb, ${avgAssists.toFixed(1)} ast, ${avgThrees.toFixed(1)} 3pm<br>`;
+        resultHTML += `Shooting: FG% ${(player.fieldPercent * 100).toFixed(1)}%, 3P% ${(player.threePercent * 100).toFixed(1)}%, FT% ${(player.ftPercent * 100).toFixed(1)}%`;
+        resultHTML += `</div>`;
+
+        document.getElementById("results").innerHTML = resultHTML;
 
       } catch (error) {
         console.error('Error fetching player data:', error);
-        document.getElementById("results").innerText = "Failed to fetch player stats. Please try again.";
+        document.getElementById("results").innerHTML = "Failed to fetch player stats. Please try again.";
       }
     }
 
@@ -184,4 +225,3 @@
 
 </body>
 </html>
-
