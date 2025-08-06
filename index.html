@@ -176,7 +176,7 @@
     .betting-title {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start; /* Sol köşeye hizala */
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 15px;
@@ -185,6 +185,11 @@
       width: 20px;
       height: 20px;
       fill: white;
+      animation: flash 2s infinite; /* Flaş animasyonu */
+    }
+    @keyframes flash {
+      0%, 50% { fill: white; }
+      25%, 75% { fill: black; }
     }
     .betting-recommendation {
       margin: 10px 0;
@@ -262,7 +267,19 @@
       { name: "Caitlin Clark", team: "IND", status: "playing", league: "WNBA" },
       { name: "Angel Reese", team: "CHI", status: "playing", league: "WNBA" },
       { name: "Napheesa Collier", team: "MIN", status: "playing", league: "WNBA" },
-      { name: "Kelsey Plum", team: "LVA", status: "playing", league: "WNBA" }
+      { name: "Kelsey Plum", team: "LVA", status: "playing", league: "WNBA" },
+      { name: "Alyssa Thomas", team: "CON", status: "playing", league: "WNBA" },
+      { name: "Kahleah Copper", team: "PHX", status: "playing", league: "WNBA" },
+      { name: "Jewell Loyd", team: "SEA", status: "playing", league: "WNBA" },
+      { name: "Nneka Ogwumike", team: "SEA", status: "playing", league: "WNBA" },
+      { name: "Jonquel Jones", team: "NYL", status: "playing", league: "WNBA" },
+      { name: "Dearica Hamby", team: "LVA", status: "playing", league: "WNBA" },
+      { name: "Courtney Williams", team: "MIN", status: "playing", league: "WNBA" },
+      { name: "Skylar Diggins-Smith", team: "SEA", status: "playing", league: "WNBA" },
+      { name: "Candace Parker", team: "LVA", status: "playing", league: "WNBA" },
+      { name: "Tina Charles", team: "ATL", status: "playing", league: "WNBA" },
+      { name: "DeWanna Bonner", team: "CON", status: "playing", league: "WNBA" },
+      { name: "Ariel Atkins", team: "WAS", status: "playing", league: "WNBA" }
     ];
 
     // Real NBA team matchups and schedules
@@ -281,7 +298,17 @@
       "MEM": ["DAL", "SAS", "HOU", "NOP", "OKC", "MIN", "DEN", "UTA"],
       "NOP": ["SAS", "HOU", "MEM", "DAL", "OKC", "ATL", "MIA", "ORL"],
       "OKC": ["DEN", "MIN", "MEM", "SAS", "DAL", "HOU", "NOP", "UTA"],
-      "CLE": ["DET", "IND", "CHI", "MIL", "TOR", "BOS", "NYK", "ATL"]
+      "CLE": ["DET", "IND", "CHI", "MIL", "TOR", "BOS", "NYK", "ATL"],
+      
+      // WNBA team matchups
+      "LVA": ["SEA", "PHX", "MIN", "CHI", "IND", "CON", "NYL", "ATL"],
+      "NYL": ["LVA", "CON", "IND", "CHI", "ATL", "WAS", "MIN", "SEA"],
+      "SEA": ["LVA", "PHX", "MIN", "NYL", "IND", "CHI", "CON", "ATL"],
+      "IND": ["CHI", "NYL", "CON", "ATL", "WAS", "LVA", "SEA", "MIN"],
+      "CHI": ["IND", "NYL", "CON", "ATL", "MIN", "WAS", "LVA", "SEA"],
+      "CON": ["NYL", "IND", "CHI", "ATL", "WAS", "LVA", "SEA", "MIN"],
+      "ATL": ["WAS", "NYL", "IND", "CHI", "CON", "LVA", "SEA", "MIN"],
+      "WAS": ["ATL", "NYL", "IND", "CHI", "CON", "LVA", "SEA", "MIN"]
     };
 
     let currentPage = 1;
@@ -359,6 +386,26 @@
         );
 
         if (!player) {
+          // Try WNBA API if NBA search fails
+          try {
+            const wnbaResponse = await fetch(`https://api.server.nbaapi.com/api/wnba/playertotals?page=1&pageSize=50&season=2024`);
+            if (wnbaResponse.ok) {
+              const wnbaData = await wnbaResponse.json();
+              const wnbaPlayer = wnbaData.data.find(p => 
+                p.playerName.toLowerCase().includes(playerName.toLowerCase()) ||
+                playerName.toLowerCase().includes(p.playerName.toLowerCase())
+              );
+              if (wnbaPlayer) {
+                wnbaPlayer.league = "WNBA";
+                player = wnbaPlayer;
+              }
+            }
+          } catch (wnbaError) {
+            console.log('WNBA API not available, continuing with NBA search');
+          }
+        }
+
+        if (!player) {
           // Try to search in more pages
           let found = false;
           for (let page = 2; page <= 15 && !found; page++) {
@@ -425,49 +472,5 @@
       
       for (let i = 1; i <= 10; i++) {
         const variation = 0.35; // 35% variation for more realistic spread
-        
-        const gamePoints = Math.max(0, Math.round(avgPoints * (1 + (Math.random() - 0.5) * variation)));
-        const gameRebounds = Math.max(0, Math.round(avgRebounds * (1 + (Math.random() - 0.5) * variation)));
-        const gameAssists = Math.max(0, Math.round(avgAssists * (1 + (Math.random() - 0.5) * variation)));
-        const gameThrees = Math.max(0, Math.round(avgThrees * (1 + (Math.random() - 0.5) * variation)));
-        const threeAttempts = Math.max(gameThrees, Math.round(gameThrees * (1.2 + Math.random() * 0.8)));
-        
-        const opponent = opponents[Math.floor(Math.random() * opponents.length)];
-        const isHome = Math.random() > 0.5;
-        const gameLabel = isHome ? `vs ${opponent}` : `@ ${opponent}`;
-
-        // Calculate game date (last 10 games, roughly every 2-3 days)
-        const daysAgo = i * 2 + Math.floor(Math.random() * 2);
-        const gameDate = new Date(currentDate);
-        gameDate.setDate(gameDate.getDate() - daysAgo);
-        const dateStr = gameDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-        resultHTML += `<tr>`;
-        resultHTML += `<td>${dateStr} ${gameLabel}</td>`;
-        resultHTML += `<td>${gamePoints}</td>`;
-        resultHTML += `<td>${gameRebounds}</td>`;
-        resultHTML += `<td>${gameAssists}</td>`;
-        resultHTML += `<td>${gameThrees}/${threeAttempts}</td>`;
-        resultHTML += `</tr>`;
-      }
-
-      resultHTML += `</tbody>`;
-      resultHTML += `</table>`;
-
-      // Season stats below table
-      resultHTML += `<div class="season-stats">`;
-      resultHTML += `<h3>Season Averages & Shooting Stats</h3>`;
-      
-      resultHTML += `<div class="season-stats-row">`;
-      resultHTML += `<div class="stat-item"><div class="stat-label">PPG</div><div class="stat-value">${avgPoints.toFixed(1)}</div></div>`;
-      resultHTML += `<div class="stat-item"><div class="stat-label">RPG</div><div class="stat-value">${avgRebounds.toFixed(1)}</div></div>`;
-      resultHTML += `<div class="stat-item"><div class="stat-label">APG</div><div class="stat-value">${avgAssists.toFixed(1)}</div></div>`;
-      resultHTML += `<div class="stat-item"><div class="stat-label">3PM</div><div class="stat-value">${avgThrees.toFixed(1)}</div></div>`;
-      resultHTML += `<div class="stat-item"><div class="stat-label">MPG</div><div class="stat-value">${(player.minutes / player.games).toFixed(1)}</div></div>`;
-      resultHTML += `</div>`;
-      
-      resultHTML += `<div class="season-stats-row">`;
-      resultHTML += `<div class="stat-item"><div class="stat-label">FG%</div
+  
 (Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
-
-
