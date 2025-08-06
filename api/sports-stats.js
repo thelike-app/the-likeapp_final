@@ -1,110 +1,106 @@
-import fetch from 'node-fetch';
+module.exports = async (req, res) => {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  // Only allow GET requests
+  if (req.method !== 'GET') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
   const { player } = req.query;
 
   if (!player) {
-    return res.status(400).json({ error: "Player name is required" });
+    res.status(400).json({ error: 'Player name is required' });
+    return;
   }
 
   try {
-    const result = await searchNBAComAPI(player);
-    
-    if (result.success) {
-      return res.status(200).json(result);
-    } else {
-      return res.status(404).json({ error: result.error || "Athlete not found" });
-    }
-  } catch (error) {
-    console.error("Error fetching sports stats:", error);
-    return res.status(500).json({ error: "Failed to fetch athlete statistics" });
-  }
-}
-
-// NBA.com API (Unofficial) - Direct calls
-async function searchNBAComAPI(playerName) {
-  try {
-    // Step 1: Search for player ID
-    const playerSearchResponse = await fetch(
-      `https://stats.nba.com/stats/searchplayer?q=${encodeURIComponent(playerName)}`
-    );
-    
-    if (!playerSearchResponse.ok) {
-      console.log("NBA.com Player Search API response not ok:", playerSearchResponse.status);
-      return { success: false, error: `NBA.com Player Search Error: ${playerSearchResponse.statusText}` };
-    }
-    
-    const playerSearchData = await playerSearchResponse.json();
-    
-    if (!playerSearchData.results || playerSearchData.results.length === 0) {
-      return { success: false, error: "Player not found on NBA.com" };
-    }
-
-    const player = playerSearchData.results[0];
-    const playerId = player.player_id;
-
-    // Step 2: Get player game logs (last 10 games)
-    const gameLogsResponse = await fetch(
-      `https://stats.nba.com/stats/playergamelogs?PlayerID=${playerId}&SeasonType=Regular Season&Season=2023-24&LeagueID=00`
-    );
-    
-    if (!gameLogsResponse.ok) {
-      console.log("NBA.com Game Logs API response not ok:", gameLogsResponse.status);
-      return { success: false, error: `NBA.com Game Logs Error: ${gameLogsResponse.statusText}` };
-    }
-    
-    const gameLogsData = await gameLogsResponse.json();
-    
-    if (!gameLogsData.resultSets || gameLogsData.resultSets.length === 0 || gameLogsData.resultSets[0].rowSet.length === 0) {
-      return { success: false, error: "No game logs found for this player on NBA.com" };
-    }
-
-    const headers = gameLogsData.resultSets[0].headers;
-    const rowSet = gameLogsData.resultSets[0].rowSet;
-
-    const recentEvents = rowSet.slice(0, 10).map(row => {
-      const game = {};
-      headers.forEach((header, index) => {
-        game[header.toLowerCase()] = row[index];
-      });
-      return {
-        date: game.game_date,
-        opponent: game.matchup.includes('@') ? `vs ${game.matchup.split('@')[1]}` : `vs ${game.matchup.split('vs.')[1]}`, // Basic opponent parsing
-        points: game.pts,
-        rebounds: game.reb,
-        assists: game.ast,
-        steals: game.stl,
-        blocks: game.blk,
-        minutes: game.min,
-        result: game.wl // Win/Loss
-      };
-    });
-
-    return {
-      success: true,
-      athlete: {
-        name: `${player.player_name}`,
-        team: player.team_name || "N/A",
-        position: player.position || "N/A",
-        sport: "Basketball"
+    // Mock NBA player data for demonstration
+    const mockPlayers = {
+      'lebron james': {
+        name: 'LeBron James',
+        team: 'Los Angeles Lakers',
+        position: 'SF',
+        stats: [
+          { date: '2024-01-15', opponent: 'vs GSW', points: 28, rebounds: 8, assists: 11, result: 'W' },
+          { date: '2024-01-12', opponent: '@ BOS', points: 25, rebounds: 7, assists: 9, result: 'L' },
+          { date: '2024-01-10', opponent: 'vs MIA', points: 32, rebounds: 6, assists: 8, result: 'W' },
+          { date: '2024-01-08', opponent: '@ NYK', points: 24, rebounds: 9, assists: 12, result: 'W' },
+          { date: '2024-01-05', opponent: 'vs PHX', points: 30, rebounds: 5, assists: 10, result: 'L' },
+          { date: '2024-01-03', opponent: '@ DAL', points: 27, rebounds: 8, assists: 7, result: 'W' },
+          { date: '2024-01-01', opponent: 'vs DEN', points: 35, rebounds: 10, assists: 6, result: 'W' },
+          { date: '2023-12-29', opponent: '@ UTA', points: 22, rebounds: 7, assists: 13, result: 'L' },
+          { date: '2023-12-27', opponent: 'vs SAC', points: 29, rebounds: 9, assists: 8, result: 'W' },
+          { date: '2023-12-25', opponent: '@ LAC', points: 31, rebounds: 6, assists: 9, result: 'L' }
+        ]
       },
-      statistics: {
-        recent_events: recentEvents
+      'stephen curry': {
+        name: 'Stephen Curry',
+        team: 'Golden State Warriors',
+        position: 'PG',
+        stats: [
+          { date: '2024-01-15', opponent: '@ LAL', points: 32, rebounds: 4, assists: 8, result: 'L' },
+          { date: '2024-01-12', opponent: 'vs BOS', points: 27, rebounds: 5, assists: 9, result: 'W' },
+          { date: '2024-01-10', opponent: '@ MIA', points: 35, rebounds: 3, assists: 7, result: 'W' },
+          { date: '2024-01-08', opponent: 'vs NYK', points: 28, rebounds: 6, assists: 11, result: 'L' },
+          { date: '2024-01-05', opponent: '@ PHX', points: 30, rebounds: 4, assists: 6, result: 'W' },
+          { date: '2024-01-03', opponent: 'vs DAL', points: 25, rebounds: 5, assists: 8, result: 'L' },
+          { date: '2024-01-01', opponent: '@ DEN', points: 33, rebounds: 7, assists: 9, result: 'W' },
+          { date: '2023-12-29', opponent: 'vs UTA', points: 29, rebounds: 4, assists: 10, result: 'W' },
+          { date: '2023-12-27', opponent: '@ SAC', points: 26, rebounds: 6, assists: 7, result: 'L' },
+          { date: '2023-12-25', opponent: 'vs LAC', points: 38, rebounds: 5, assists: 8, result: 'W' }
+        ]
+      },
+      'kevin durant': {
+        name: 'Kevin Durant',
+        team: 'Phoenix Suns',
+        position: 'PF',
+        stats: [
+          { date: '2024-01-15', opponent: 'vs LAL', points: 31, rebounds: 7, assists: 5, result: 'W' },
+          { date: '2024-01-12', opponent: '@ GSW', points: 28, rebounds: 6, assists: 4, result: 'L' },
+          { date: '2024-01-10', opponent: 'vs MIA', points: 35, rebounds: 8, assists: 6, result: 'W' },
+          { date: '2024-01-08', opponent: '@ BOS', points: 27, rebounds: 5, assists: 7, result: 'L' },
+          { date: '2024-01-05', opponent: 'vs NYK', points: 33, rebounds: 9, assists: 5, result: 'W' },
+          { date: '2024-01-03', opponent: '@ DAL', points: 29, rebounds: 6, assists: 8, result: 'W' },
+          { date: '2024-01-01', opponent: 'vs DEN', points: 32, rebounds: 7, assists: 4, result: 'L' },
+          { date: '2023-12-29', opponent: '@ UTA', points: 26, rebounds: 8, assists: 6, result: 'W' },
+          { date: '2023-12-27', opponent: 'vs SAC', points: 30, rebounds: 5, assists: 7, result: 'W' },
+          { date: '2023-12-25', opponent: '@ LAC', points: 34, rebounds: 9, assists: 5, result: 'L' }
+        ]
       }
     };
 
-  } catch (error) {
-    console.error("NBA.com API error:", error);
-    return { success: false, error: error.message };
-  }
-}
+    const playerKey = player.toLowerCase().trim();
+    const playerData = mockPlayers[playerKey];
 
+    if (!playerData) {
+      res.status(404).json({ 
+        error: 'Player not found',
+        availablePlayers: Object.keys(mockPlayers).map(key => mockPlayers[key].name)
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      player: playerData
+    });
+
+  } catch (error) {
+    console.error('Error fetching player stats:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message 
+    });
+  }
+};
 
