@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Statistics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .analyze-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .player-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .player-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4ecdc4;
+        }
+
+        .player-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stats-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ff6b6b;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-date {
+            font-weight: bold;
+            color: #4ecdc4;
+            margin-bottom: 5px;
+        }
+
+        .stat-opponent {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .stat-numbers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .error {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.5);
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .examples {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .examples strong {
+            color: #4ecdc4;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-numbers {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NBA Player Statistics</h1>
+        <p class="subtitle">Get the latest NBA player statistics and performance data</p>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="playerInput" placeholder="Enter player name (e.g., LeBron James, Stephen Curry)">
+                <button class="analyze-btn" onclick="searchPlayer()">ANALYZE</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Fetching player statistics...</p>
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="results" id="results">
+            <div class="player-info" id="playerInfo"></div>
+            <div class="stats-container">
+                <div class="stats-title">Recent Game Statistics</div>
+                <div class="stats-grid" id="statsGrid"></div>
+            </div>
+        </div>
+
+        <div class="examples">
+            <strong>Try searching for:</strong> LeBron James, Stephen Curry, Kevin Durant, Giannis Antetokounmpo, Luka Doncic
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const pageSize = 10;
+
+        async function searchPlayer() {
+            const playerName = document.getElementById('playerInput').value.trim();
+            
+            if (!playerName) {
+                showError('Please enter a player name');
+                return;
+            }
+
+            showLoading(true);
+            hideError();
+            hideResults();
+
+            try {
+                // Search for player in totals data
+                const response = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=${currentPage}&pageSize=${pageSize}&season=2024`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Find player by name (case insensitive)
+                const player = data.data.find(p => 
+                    p.playerName.toLowerCase().includes(playerName.toLowerCase()) ||
+                    playerName.toLowerCase().includes(p.playerName.toLowerCase())
+                );
+
+                if (!player) {
+                    // Try to search in more pages
+                    let found = false;
+                    for (let page = 2; page <= 5 && !found; page++) {
+                        const nextResponse = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=${page}&pageSize=${pageSize}&season=2024`);
+                        if (nextResponse.ok) {
+                            const nextData = await nextResponse.json();
+                            const foundPlayer = nextData.data.find(p => 
+                                p.playerName.toLowerCase().includes(playerName.toLowerCase()) ||
+                                playerName.toLowerCase().includes(p.playerName.toLowerCase())
+                            );
+                            if (foundPlayer) {
+                                displayPlayerStats(foundPlayer);
+                                found = true;
+                            }
+                        }
+                    }
+                    
+                    if (!found) {
+                        throw new Error(`Player "${playerName}" not found. Please try a different name or check spelling.`);
+                    }
+                } else {
+                    displayPlayerStats(player);
+                }
+
+            } catch (error) {
+                console.error('Error fetching player data:', error);
+                showError(error.message || 'Failed to fetch player statistics. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayPlayerStats(player) {
+            // Display player info
+            const playerInfo = document.getElementById('playerInfo');
+            playerInfo.innerHTML = `
+                <div class="player-name">${player.playerName}</div>
+                <div class="player-details">
+                    <div class="detail-item"><strong>Team:</strong> ${player.team}</div>
+                    <div class="detail-item"><strong>Position:</strong> ${player.position}</div>
+                    <div class="detail-item"><strong>Age:</strong> ${player.age}</div>
+                    <div class="detail-item"><strong>Games Played:</strong> ${player.games}</div>
+                </div>
+            `;
+
+            // Display season stats as "recent games" (since we don't have game-by-game data)
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-date">2024 Season Totals</div>
+                    <div class="stat-opponent">Season Average Per Game</div>
+                    <div class="stat-numbers">
+                        <div class="stat-number">
+                            <div class="stat-label">Points</div>
+                            <div class="stat-value">${(player.points / player.games).toFixed(1)}</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">Rebounds</div>
+                            <div class="stat-value">${(player.totalRb / player.games).toFixed(1)}</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">Assists</div>
+                            <div class="stat-value">${(player.assists / player.games).toFixed(1)}</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">FG%</div>
+                            <div class="stat-value">${(player.fieldPercent * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">3P%</div>
+                            <div class="stat-value">${(player.threePercent * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">FT%</div>
+                            <div class="stat-value">${(player.ftPercent * 100).toFixed(1)}%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-date">Season Totals</div>
+                    <div class="stat-opponent">Total Statistics</div>
+                    <div class="stat-numbers">
+                        <div class="stat-number">
+                            <div class="stat-label">Total Points</div>
+                            <div class="stat-value">${player.points}</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">Total Rebounds</div>
+                            <div class="stat-value">${player.totalRb}</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">Total Assists</div>
+                            <div class="stat-value">${player.assists}</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">Steals</div>
+                            <div class="stat-value">${player.steals}</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">Blocks</div>
+                            <div class="stat-value">${player.blocks}</div>
+                        </div>
+                        <div class="stat-number">
+                            <div class="stat-label">Minutes</div>
+                            <div class="stat-value">${player.minutesPg.toFixed(1)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            showResults();
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.querySelector('.analyze-btn').disabled = show;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function showResults() {
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function hideResults() {
+            document.getElementById('results').style.display = 'none';
+        }
+
+        // Allow Enter key to trigger search
+        document.getElementById('playerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchPlayer();
+            }
+        });
+    </script>
+</body>
+</html>
+
