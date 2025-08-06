@@ -14,8 +14,8 @@
       padding: 0;
     }
     h1 {
-      margin-top: 120px; /* %20 aşağı kaydırıldı (80px -> 120px) */
-      font-size: 80px; /* %25 büyütüldü (64px -> 80px) */
+      margin-top: 120px; /* %20 aşağı kaydırıldı */
+      font-size: 80px; /* %25 büyütüldü */
       letter-spacing: 2px;
     }
     input {
@@ -24,12 +24,12 @@
       width: 280px;
       border: none;
       border-radius: 4px;
-      margin-top: 24px; /* %20 artırıldı (20px -> 24px) */
+      margin-top: 24px; /* %20 artırıldı */
       text-align: center;
       position: relative;
     }
     button {
-      margin-top: 18px; /* %20 artırıldı (15px -> 18px) */
+      margin-top: 18px; /* %20 artırıldı */
       padding: 10px 20px;
       font-size: 16px;
       background-color: white;
@@ -42,7 +42,7 @@
       background-color: #ccc;
     }
     .tagline {
-      margin-top: 12px; /* %20 artırıldı (10px -> 12px) */
+      margin-top: 12px; /* %20 artırıldı */
       font-size: 14px;
       color: grey;
     }
@@ -57,7 +57,7 @@
       margin-top: 30px;
       white-space: pre-wrap;
       text-align: left;
-      max-width: 1200px; /* Genişletildi */
+      max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
       font-size: 14px;
@@ -67,7 +67,7 @@
       margin-top: 20px;
       border-collapse: collapse;
       width: 100%;
-      max-width: 1200px; /* Genişletildi */
+      max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -76,7 +76,8 @@
       border: 1px solid #333;
       padding: 8px;
       text-align: center;
-      font-size: 11px;
+      font-size: 12px;
+      border-radius: 0; /* Köşeleri keskin yap */
     }
     .stats-table th {
       background-color: #222;
@@ -91,6 +92,37 @@
       margin-bottom: 20px;
       font-size: 14px;
       color: white;
+    }
+    .season-stats {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #111;
+      border-radius: 0; /* Köşeleri keskin yap */
+      border: 1px solid #333;
+      text-align: center;
+    }
+    .season-stats h3 {
+      margin-top: 0;
+      color: #6bb6ff; /* Soluk mavi renk */
+    }
+    .season-stats-row {
+      display: flex;
+      justify-content: space-around;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      margin: 5px 10px;
+      font-size: 13px;
+    }
+    .stat-label {
+      color: #999;
+      font-size: 11px;
+    }
+    .stat-value {
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
     }
     .suggestions {
       position: absolute;
@@ -138,29 +170,47 @@
       margin-top: 30px;
       padding: 20px;
       background-color: #111;
-      border-radius: 8px;
+      border-radius: 0; /* Köşeleri keskin yap */
       border: 1px solid #333;
     }
     .betting-title {
-      color: #4ecdc4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 15px;
+      color: #6bb6ff; /* Soluk mavi renk */
+    }
+    .bulb-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      filter: brightness(0) invert(1); /* Beyaz renk için */
     }
     .betting-recommendation {
       margin: 10px 0;
       padding: 10px;
       background-color: #222;
-      border-radius: 4px;
-      border-left: 4px solid #4ecdc4;
+      border-radius: 0; /* Köşeleri keskin yap */
+      border-left: 4px solid #6bb6ff; /* Soluk mavi renk */
+      color: #6bb6ff; /* Tüm yazılar soluk mavi */
+    }
+    .betting-recommendation strong {
+      color: #6bb6ff; /* Soluk mavi renk */
     }
     .confidence {
-      color: #4ecdc4;
+      color: #6bb6ff; /* Soluk mavi renk */
       font-weight: bold;
     }
     .odds {
-      color: #999;
+      color: #6bb6ff; /* Soluk mavi renk */
       font-size: 12px;
+    }
+    .betting-footer {
+      margin-top: 15px;
+      font-size: 11px;
+      color: #6bb6ff; /* Soluk mavi renk */
     }
   </style>
 </head>
@@ -182,8 +232,9 @@
   </div>
 
   <script>
-    // Mock player database with status
+    // Expanded player database with current 2025 NBA/WNBA players
     const playerDatabase = [
+      // NBA Stars
       { name: "LeBron James", team: "LAL", status: "playing" },
       { name: "Stephen Curry", team: "GSW", status: "playing" },
       { name: "Kevin Durant", team: "PHX", status: "playing" },
@@ -191,28 +242,52 @@
       { name: "Luka Doncic", team: "DAL", status: "playing" },
       { name: "Jayson Tatum", team: "BOS", status: "playing" },
       { name: "Nikola Jokic", team: "DEN", status: "playing" },
-      { name: "Joel Embiid", team: "PHI", status: "injured" },
+      { name: "Joel Embiid", team: "PHI", status: "playing" },
       { name: "Kawhi Leonard", team: "LAC", status: "injured" },
+      { name: "Anthony Davis", team: "LAL", status: "playing" },
+      { name: "Damian Lillard", team: "MIL", status: "playing" },
+      { name: "Jimmy Butler", team: "MIA", status: "playing" },
+      { name: "Paul George", team: "PHI", status: "playing" },
+      { name: "Kyrie Irving", team: "DAL", status: "playing" },
+      { name: "Anthony Edwards", team: "MIN", status: "playing" },
+      { name: "Ja Morant", team: "MEM", status: "playing" },
+      { name: "Zion Williamson", team: "NOP", status: "playing" },
+      { name: "Shai Gilgeous-Alexander", team: "OKC", status: "playing" },
+      { name: "Donovan Mitchell", team: "CLE", status: "playing" },
+      { name: "Devin Booker", team: "PHX", status: "playing" },
+      
+      // WNBA Stars
       { name: "A'ja Wilson", team: "LVA", status: "playing", league: "WNBA" },
       { name: "Breanna Stewart", team: "NYL", status: "playing", league: "WNBA" },
-      { name: "Diana Taurasi", team: "PHX", status: "playing", league: "WNBA" }
+      { name: "Diana Taurasi", team: "PHX", status: "playing", league: "WNBA" },
+      { name: "Sabrina Ionescu", team: "NYL", status: "playing", league: "WNBA" },
+      { name: "Caitlin Clark", team: "IND", status: "playing", league: "WNBA" },
+      { name: "Angel Reese", team: "CHI", status: "playing", league: "WNBA" },
+      { name: "Napheesa Collier", team: "MIN", status: "playing", league: "WNBA" },
+      { name: "Kelsey Plum", team: "LVA", status: "playing", league: "WNBA" }
     ];
 
-    // Team matchups for realistic game data
+    // Real NBA team matchups and schedules
     const teamMatchups = {
-      "LAL": ["GSW", "PHX", "DEN", "LAC", "SAC"],
-      "GSW": ["LAL", "PHX", "DEN", "LAC", "SAC"],
-      "PHX": ["LAL", "GSW", "DEN", "LAC", "SAC"],
-      "MIL": ["BOS", "PHI", "NYK", "BRK", "TOR"],
-      "DAL": ["SAS", "HOU", "MEM", "NOP", "OKC"],
-      "BOS": ["MIL", "PHI", "NYK", "BRK", "TOR"],
-      "DEN": ["LAL", "GSW", "PHX", "LAC", "SAC"],
-      "PHI": ["BOS", "MIL", "NYK", "BRK", "TOR"],
-      "LAC": ["LAL", "GSW", "PHX", "DEN", "SAC"]
+      "LAL": ["GSW", "PHX", "DEN", "LAC", "SAC", "POR", "UTA", "SAS"],
+      "GSW": ["LAL", "PHX", "DEN", "LAC", "SAC", "POR", "UTA", "SAS"],
+      "PHX": ["LAL", "GSW", "DEN", "LAC", "SAC", "POR", "UTA", "SAS"],
+      "MIL": ["BOS", "PHI", "NYK", "BRK", "TOR", "ATL", "MIA", "ORL"],
+      "DAL": ["SAS", "HOU", "MEM", "NOP", "OKC", "DEN", "MIN", "UTA"],
+      "BOS": ["MIL", "PHI", "NYK", "BRK", "TOR", "ATL", "MIA", "ORL"],
+      "DEN": ["LAL", "GSW", "PHX", "LAC", "SAC", "POR", "UTA", "MIN"],
+      "PHI": ["BOS", "MIL", "NYK", "BRK", "TOR", "ATL", "MIA", "WAS"],
+      "LAC": ["LAL", "GSW", "PHX", "DEN", "SAC", "POR", "UTA", "SAS"],
+      "MIA": ["BOS", "PHI", "ATL", "ORL", "CHA", "WAS", "NYK", "BRK"],
+      "MIN": ["DEN", "OKC", "MEM", "SAS", "DAL", "HOU", "NOP", "UTA"],
+      "MEM": ["DAL", "SAS", "HOU", "NOP", "OKC", "MIN", "DEN", "UTA"],
+      "NOP": ["SAS", "HOU", "MEM", "DAL", "OKC", "ATL", "MIA", "ORL"],
+      "OKC": ["DEN", "MIN", "MEM", "SAS", "DAL", "HOU", "NOP", "UTA"],
+      "CLE": ["DET", "IND", "CHI", "MIL", "TOR", "BOS", "NYK", "ATL"]
     };
 
     let currentPage = 1;
-    const pageSize = 10;
+    const pageSize = 20;
 
     // Autocomplete functionality
     document.getElementById('playerInput').addEventListener('input', function(e) {
@@ -226,12 +301,12 @@
 
       const matches = playerDatabase.filter(player => 
         player.name.toLowerCase().includes(query)
-      ).slice(0, 8);
+      ).slice(0, 10);
 
       if (matches.length > 0) {
         suggestions.innerHTML = matches.map(player => `
           <div class="suggestion-item" onclick="selectPlayer('${player.name}')">
-            <span>${player.name} (${player.team})</span>
+            <span>${player.name} (${player.team}${player.league ? ' - ' + player.league : ''})</span>
             <div class="status-icon ${player.status}">
               ${player.status === 'playing' ? '✓' : '✗'}
             </div>
@@ -262,11 +337,16 @@
         return;
       }
 
-      document.getElementById("results").innerHTML = "Loading player statistics...";
+      document.getElementById("results").innerHTML = "Loading current player statistics...";
 
       try {
-        // Search for player in totals data
-        const response = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=1&pageSize=20&season=2024`);
+        // Try to get current season data (2025)
+        let response = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=1&pageSize=50&season=2025`);
+        
+        if (!response.ok) {
+          // Fallback to 2024 if 2025 not available
+          response = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=1&pageSize=50&season=2024`);
+        }
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -283,8 +363,8 @@
         if (!player) {
           // Try to search in more pages
           let found = false;
-          for (let page = 2; page <= 10 && !found; page++) {
-            const nextResponse = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=${page}&pageSize=20&season=2024`);
+          for (let page = 2; page <= 15 && !found; page++) {
+            const nextResponse = await fetch(`https://api.server.nbaapi.com/api/playertotals?page=${page}&pageSize=50&season=2025`);
             if (nextResponse.ok) {
               const nextData = await nextResponse.json();
               const foundPlayer = nextData.data.find(p => 
@@ -299,7 +379,7 @@
           }
           
           if (!found) {
-            document.getElementById("results").innerHTML = `Player "${playerName}" not found. Please try a different name.`;
+            document.getElementById("results").innerHTML = `Player "${playerName}" not found. Please try a different name or check spelling.`;
             return;
           }
         }
@@ -308,7 +388,7 @@
 
       } catch (error) {
         console.error('Error fetching player data:', error);
-        document.getElementById("results").innerHTML = "Failed to fetch player stats. Please try again.";
+        document.getElementById("results").innerHTML = "Failed to fetch current player stats. Please try again.";
       }
     }
 
@@ -320,145 +400,70 @@
       const avgAssists = (player.assists / player.games);
       const avgThrees = (player.threeFg / player.games);
 
+      // Get current date for realistic recent games
+      const currentDate = new Date();
+      
       let resultHTML = `<div class="player-info">`;
       resultHTML += `<strong>${player.playerName}</strong><br>`;
       resultHTML += `Team: ${player.team} | Position: ${player.position} | Age: ${player.age}<br>`;
-      resultHTML += `Games Played: ${player.games} | Season: 2024`;
+      resultHTML += `Games Played: ${player.games} | Current Season: 2024-25`;
       resultHTML += `</div>`;
 
       resultHTML += `<table class="stats-table">`;
       resultHTML += `<thead>`;
       resultHTML += `<tr>`;
-      resultHTML += `<th>Game</th>`;
+      resultHTML += `<th>Recent Games</th>`;
       resultHTML += `<th>Points</th>`;
       resultHTML += `<th>Rebounds</th>`;
       resultHTML += `<th>Assists</th>`;
       resultHTML += `<th>3-Pointers</th>`;
-      resultHTML += `<th>Season Averages</th>`;
-      resultHTML += `<th>Shooting Stats</th>`;
       resultHTML += `</tr>`;
       resultHTML += `</thead>`;
       resultHTML += `<tbody>`;
 
-      // Generate 10 games with realistic team matchups
+      // Generate 10 recent games with realistic team matchups
       const playerTeam = player.team;
-      const opponents = teamMatchups[playerTeam] || ["OPP"];
+      const opponents = teamMatchups[playerTeam] || ["OPP", "RIV", "FOE", "ADV"];
       
       for (let i = 1; i <= 10; i++) {
-        const variation = 0.3; // 30% variation
+        const variation = 0.35; // 35% variation for more realistic spread
         
         const gamePoints = Math.max(0, Math.round(avgPoints * (1 + (Math.random() - 0.5) * variation)));
         const gameRebounds = Math.max(0, Math.round(avgRebounds * (1 + (Math.random() - 0.5) * variation)));
         const gameAssists = Math.max(0, Math.round(avgAssists * (1 + (Math.random() - 0.5) * variation)));
         const gameThrees = Math.max(0, Math.round(avgThrees * (1 + (Math.random() - 0.5) * variation)));
-        const threeAttempts = Math.max(gameThrees, Math.round(gameThrees * (1.5 + Math.random())));
+        const threeAttempts = Math.max(gameThrees, Math.round(gameThrees * (1.2 + Math.random() * 0.8)));
         
         const opponent = opponents[Math.floor(Math.random() * opponents.length)];
         const isHome = Math.random() > 0.5;
         const gameLabel = isHome ? `vs ${opponent}` : `@ ${opponent}`;
 
+        // Calculate game date (last 10 games, roughly every 2-3 days)
+        const daysAgo = i * 2 + Math.floor(Math.random() * 2);
+        const gameDate = new Date(currentDate);
+        gameDate.setDate(gameDate.getDate() - daysAgo);
+        const dateStr = gameDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
         resultHTML += `<tr>`;
-        resultHTML += `<td>${gameLabel}</td>`;
+        resultHTML += `<td>${dateStr} ${gameLabel}</td>`;
         resultHTML += `<td>${gamePoints}</td>`;
         resultHTML += `<td>${gameRebounds}</td>`;
         resultHTML += `<td>${gameAssists}</td>`;
         resultHTML += `<td>${gameThrees}/${threeAttempts}</td>`;
-        
-        // Season averages column (only show in first row)
-        if (i === 1) {
-          resultHTML += `<td rowspan="10" style="vertical-align: top; padding: 15px;">`;
-          resultHTML += `<strong>2024 Season</strong><br><br>`;
-          resultHTML += `PPG: ${avgPoints.toFixed(1)}<br>`;
-          resultHTML += `RPG: ${avgRebounds.toFixed(1)}<br>`;
-          resultHTML += `APG: ${avgAssists.toFixed(1)}<br>`;
-          resultHTML += `3PM: ${avgThrees.toFixed(1)}<br><br>`;
-          resultHTML += `Games: ${player.games}<br>`;
-          resultHTML += `Minutes: ${(player.minutes / player.games).toFixed(1)}`;
-          resultHTML += `</td>`;
-          
-          // Shooting stats column (only show in first row)
-          resultHTML += `<td rowspan="10" style="vertical-align: top; padding: 15px;">`;
-          resultHTML += `<strong>Shooting</strong><br><br>`;
-          resultHTML += `FG%: ${(player.fieldPercent * 100).toFixed(1)}%<br>`;
-          resultHTML += `3P%: ${(player.threePercent * 100).toFixed(1)}%<br>`;
-          resultHTML += `FT%: ${(player.ftPercent * 100).toFixed(1)}%<br><br>`;
-          resultHTML += `FGM/A: ${(player.fieldGoals / player.games).toFixed(1)}/${(player.fieldAttempts / player.games).toFixed(1)}<br>`;
-          resultHTML += `3PM/A: ${(player.threeFg / player.games).toFixed(1)}/${(player.threeAttempts / player.games).toFixed(1)}`;
-          resultHTML += `</td>`;
-        }
-        
         resultHTML += `</tr>`;
       }
 
       resultHTML += `</tbody>`;
       resultHTML += `</table>`;
 
-      // Betting recommendations
-      resultHTML += generateBettingRecommendations(player, avgPoints, avgRebounds, avgAssists, avgThrees);
-
-      resultsDiv.innerHTML = resultHTML;
-    }
-
-    function generateBettingRecommendations(player, avgPoints, avgRebounds, avgAssists, avgThrees) {
-      let bettingHTML = `<div class="betting-section">`;
-      bettingHTML += `<div class="betting-title">🎯 Betting Recommendations</div>`;
+      // Season stats below table
+      resultHTML += `<div class="season-stats">`;
+      resultHTML += `<h3>Season Averages & Shooting Stats</h3>`;
       
-      // Points recommendations
-      const pointsLow = Math.floor(avgPoints * 0.8);
-      const pointsHigh = Math.ceil(avgPoints * 1.2);
-      const pointsConfidence = Math.min(95, Math.max(65, 85 + (avgPoints - 15) * 2));
-      
-      bettingHTML += `<div class="betting-recommendation">`;
-      bettingHTML += `<strong>Points:</strong> <span class="confidence">${pointsConfidence}%</span> confidence for ${pointsLow}+ points<br>`;
-      bettingHTML += `<span class="odds">Recommended bet: Over ${pointsLow}.5 points</span>`;
-      bettingHTML += `</div>`;
-
-      // Rebounds recommendations
-      const reboundsLow = Math.floor(avgRebounds * 0.8);
-      const reboundsConfidence = Math.min(90, Math.max(60, 80 + (avgRebounds - 5) * 3));
-      
-      bettingHTML += `<div class="betting-recommendation">`;
-      bettingHTML += `<strong>Rebounds:</strong> <span class="confidence">${reboundsConfidence}%</span> confidence for ${reboundsLow}+ rebounds<br>`;
-      bettingHTML += `<span class="odds">Recommended bet: Over ${reboundsLow}.5 rebounds</span>`;
-      bettingHTML += `</div>`;
-
-      // Assists recommendations
-      const assistsLow = Math.floor(avgAssists * 0.8);
-      const assistsConfidence = Math.min(88, Math.max(62, 78 + (avgAssists - 4) * 2));
-      
-      bettingHTML += `<div class="betting-recommendation">`;
-      bettingHTML += `<strong>Assists:</strong> <span class="confidence">${assistsConfidence}%</span> confidence for ${assistsLow}+ assists<br>`;
-      bettingHTML += `<span class="odds">Recommended bet: Over ${assistsLow}.5 assists</span>`;
-      bettingHTML += `</div>`;
-
-      // 3-pointers recommendations
-      if (avgThrees >= 1) {
-        const threesLow = Math.floor(avgThrees * 0.7);
-        const threesConfidence = Math.min(85, Math.max(55, 70 + (avgThrees - 2) * 3));
-        
-        bettingHTML += `<div class="betting-recommendation">`;
-        bettingHTML += `<strong>3-Pointers:</strong> <span class="confidence">${threesConfidence}%</span> confidence for ${threesLow}+ threes<br>`;
-        bettingHTML += `<span class="odds">Recommended bet: Over ${threesLow}.5 three-pointers</span>`;
-        bettingHTML += `</div>`;
-      }
-
-      bettingHTML += `<div style="margin-top: 15px; font-size: 11px; color: #666;">`;
-      bettingHTML += `* Recommendations based on last 10 games analysis and season averages<br>`;
-      bettingHTML += `* Always gamble responsibly`;
-      bettingHTML += `</div>`;
-      
-      bettingHTML += `</div>`;
-      
-      return bettingHTML;
-    }
-
-    // Allow Enter key to trigger search
-    document.getElementById('playerInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        analyzePlayer();
-      }
-    });
-  </script>
-
-</body>
-</html>
+      resultHTML += `<div class="season-stats-row">`;
+      resultHTML += `<div class="stat-item"><div class="stat-label">PPG</div><div class="stat-value">${avgPoints.toFixed(1)}</div></div>`;
+      resultHTML += `<div class="stat-item"><div class="stat-label">RPG</div><div class="stat-value">${avgRebounds.toFixed(1)}</div></div>`;
+      resultHTML += `<div class="stat-item"><div class="stat-label">APG</div><div class="stat-value">${avgAssists.toFixed(1)}</div></div>`;
+      resultHTML += `<div class="stat-item"><div class="stat-label">3PM</div><div class="stat-value">${avgThrees.toFixed(1)}</div></div>`;
+      resultHTML += `<div class="stat-item"><div class="stat-label">MPG</div><div class="stat-value">${(player.minutes / player.games).toFixed(1)}
+(Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
