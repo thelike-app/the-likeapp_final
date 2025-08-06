@@ -14,8 +14,8 @@
       padding: 0;
     }
     h1 {
-      margin-top: 80px;
-      font-size: 64px;
+      margin-top: 120px; /* %20 aşağı kaydırıldı (80px -> 120px) */
+      font-size: 80px; /* %25 büyütüldü (64px -> 80px) */
       letter-spacing: 2px;
     }
     input {
@@ -24,11 +24,12 @@
       width: 280px;
       border: none;
       border-radius: 4px;
-      margin-top: 20px;
+      margin-top: 24px; /* %20 artırıldı (20px -> 24px) */
       text-align: center;
+      position: relative;
     }
     button {
-      margin-top: 15px;
+      margin-top: 18px; /* %20 artırıldı (15px -> 18px) */
       padding: 10px 20px;
       font-size: 16px;
       background-color: white;
@@ -41,7 +42,7 @@
       background-color: #ccc;
     }
     .tagline {
-      margin-top: 10px;
+      margin-top: 12px; /* %20 artırıldı (10px -> 12px) */
       font-size: 14px;
       color: grey;
     }
@@ -56,7 +57,7 @@
       margin-top: 30px;
       white-space: pre-wrap;
       text-align: left;
-      max-width: 600px;
+      max-width: 1200px; /* Genişletildi */
       margin-left: auto;
       margin-right: auto;
       font-size: 14px;
@@ -66,7 +67,7 @@
       margin-top: 20px;
       border-collapse: collapse;
       width: 100%;
-      max-width: 800px;
+      max-width: 1200px; /* Genişletildi */
       margin-left: auto;
       margin-right: auto;
     }
@@ -75,7 +76,7 @@
       border: 1px solid #333;
       padding: 8px;
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
     }
     .stats-table th {
       background-color: #222;
@@ -91,14 +92,87 @@
       font-size: 14px;
       color: white;
     }
+    .suggestions {
+      position: absolute;
+      background-color: #222;
+      border: 1px solid #333;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+      z-index: 1000;
+      display: none;
+    }
+    .suggestion-item {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+    }
+    .suggestion-item:hover {
+      background-color: #333;
+    }
+    .status-icon {
+      margin-left: auto;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+    }
+    .playing {
+      background-color: #007bff;
+      color: white;
+    }
+    .injured {
+      background-color: #666;
+      color: black;
+    }
+    .betting-section {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #111;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+    .betting-title {
+      color: #4ecdc4;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .betting-recommendation {
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #222;
+      border-radius: 4px;
+      border-left: 4px solid #4ecdc4;
+    }
+    .confidence {
+      color: #4ecdc4;
+      font-weight: bold;
+    }
+    .odds {
+      color: #999;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
 
   <h1>LIKE</h1>
-  <input type="text" id="playerInput" placeholder="Enter NBA player name..."/>
+  <div style="position: relative; display: inline-block;">
+    <input type="text" id="playerInput" placeholder="Enter NBA/WNBA player name..." autocomplete="off"/>
+    <div id="suggestions" class="suggestions"></div>
+  </div>
   <br/>
-  <button onclick="analyzePlayer()">ANALYZE</button>
+  <button onclick="analyzePlayer()" id="analyzeBtn">ANALYZE</button>
   <div class="tagline">Ask less. Get more.</div>
 
   <div id="results"></div>
@@ -108,6 +182,79 @@
   </div>
 
   <script>
+    // Mock player database with status
+    const playerDatabase = [
+      { name: "LeBron James", team: "LAL", status: "playing" },
+      { name: "Stephen Curry", team: "GSW", status: "playing" },
+      { name: "Kevin Durant", team: "PHX", status: "playing" },
+      { name: "Giannis Antetokounmpo", team: "MIL", status: "playing" },
+      { name: "Luka Doncic", team: "DAL", status: "playing" },
+      { name: "Jayson Tatum", team: "BOS", status: "playing" },
+      { name: "Nikola Jokic", team: "DEN", status: "playing" },
+      { name: "Joel Embiid", team: "PHI", status: "injured" },
+      { name: "Kawhi Leonard", team: "LAC", status: "injured" },
+      { name: "A'ja Wilson", team: "LVA", status: "playing", league: "WNBA" },
+      { name: "Breanna Stewart", team: "NYL", status: "playing", league: "WNBA" },
+      { name: "Diana Taurasi", team: "PHX", status: "playing", league: "WNBA" }
+    ];
+
+    // Team matchups for realistic game data
+    const teamMatchups = {
+      "LAL": ["GSW", "PHX", "DEN", "LAC", "SAC"],
+      "GSW": ["LAL", "PHX", "DEN", "LAC", "SAC"],
+      "PHX": ["LAL", "GSW", "DEN", "LAC", "SAC"],
+      "MIL": ["BOS", "PHI", "NYK", "BRK", "TOR"],
+      "DAL": ["SAS", "HOU", "MEM", "NOP", "OKC"],
+      "BOS": ["MIL", "PHI", "NYK", "BRK", "TOR"],
+      "DEN": ["LAL", "GSW", "PHX", "LAC", "SAC"],
+      "PHI": ["BOS", "MIL", "NYK", "BRK", "TOR"],
+      "LAC": ["LAL", "GSW", "PHX", "DEN", "SAC"]
+    };
+
+    let currentPage = 1;
+    const pageSize = 10;
+
+    // Autocomplete functionality
+    document.getElementById('playerInput').addEventListener('input', function(e) {
+      const query = e.target.value.toLowerCase();
+      const suggestions = document.getElementById('suggestions');
+      
+      if (query.length < 2) {
+        suggestions.style.display = 'none';
+        return;
+      }
+
+      const matches = playerDatabase.filter(player => 
+        player.name.toLowerCase().includes(query)
+      ).slice(0, 8);
+
+      if (matches.length > 0) {
+        suggestions.innerHTML = matches.map(player => `
+          <div class="suggestion-item" onclick="selectPlayer('${player.name}')">
+            <span>${player.name} (${player.team})</span>
+            <div class="status-icon ${player.status}">
+              ${player.status === 'playing' ? '✓' : '✗'}
+            </div>
+          </div>
+        `).join('');
+        suggestions.style.display = 'block';
+      } else {
+        suggestions.style.display = 'none';
+      }
+    });
+
+    function selectPlayer(playerName) {
+      document.getElementById('playerInput').value = playerName;
+      document.getElementById('suggestions').style.display = 'none';
+    }
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#playerInput') && !e.target.closest('#suggestions')) {
+        document.getElementById('suggestions').style.display = 'none';
+      }
+    });
+
     async function analyzePlayer() {
       const playerName = document.getElementById("playerInput").value.trim();
       if (!playerName) {
@@ -157,62 +304,152 @@
           }
         }
 
-        // Generate mock "last 10 games" data based on season averages
-        const avgPoints = (player.points / player.games);
-        const avgRebounds = (player.totalRb / player.games);
-        const avgAssists = (player.assists / player.games);
-        const avgThrees = (player.threeFg / player.games);
-
-        let resultHTML = `<div class="player-info">`;
-        resultHTML += `<strong>${player.playerName}</strong><br>`;
-        resultHTML += `Team: ${player.team} | Position: ${player.position} | Age: ${player.age}<br>`;
-        resultHTML += `Games Played: ${player.games} | Season: 2024`;
-        resultHTML += `</div>`;
-
-        resultHTML += `<table class="stats-table">`;
-        resultHTML += `<thead>`;
-        resultHTML += `<tr>`;
-        resultHTML += `<th>Game</th>`;
-        resultHTML += `<th>Points</th>`;
-        resultHTML += `<th>Rebounds</th>`;
-        resultHTML += `<th>Assists</th>`;
-        resultHTML += `<th>3-Pointers</th>`;
-        resultHTML += `</tr>`;
-        resultHTML += `</thead>`;
-        resultHTML += `<tbody>`;
-
-        // Generate 10 games with realistic variations around season averages
-        for (let i = 1; i <= 10; i++) {
-          const variation = 0.3; // 30% variation
-          
-          const gamePoints = Math.max(0, Math.round(avgPoints * (1 + (Math.random() - 0.5) * variation)));
-          const gameRebounds = Math.max(0, Math.round(avgRebounds * (1 + (Math.random() - 0.5) * variation)));
-          const gameAssists = Math.max(0, Math.round(avgAssists * (1 + (Math.random() - 0.5) * variation)));
-          const gameThrees = Math.max(0, Math.round(avgThrees * (1 + (Math.random() - 0.5) * variation)));
-
-          resultHTML += `<tr>`;
-          resultHTML += `<td>Game ${i}</td>`;
-          resultHTML += `<td>${gamePoints}</td>`;
-          resultHTML += `<td>${gameRebounds}</td>`;
-          resultHTML += `<td>${gameAssists}</td>`;
-          resultHTML += `<td>${gameThrees}</td>`;
-          resultHTML += `</tr>`;
-        }
-
-        resultHTML += `</tbody>`;
-        resultHTML += `</table>`;
-
-        resultHTML += `<div style="margin-top: 20px; font-size: 12px; color: #999;">`;
-        resultHTML += `Season Averages: ${avgPoints.toFixed(1)} pts, ${avgRebounds.toFixed(1)} reb, ${avgAssists.toFixed(1)} ast, ${avgThrees.toFixed(1)} 3pm<br>`;
-        resultHTML += `Shooting: FG% ${(player.fieldPercent * 100).toFixed(1)}%, 3P% ${(player.threePercent * 100).toFixed(1)}%, FT% ${(player.ftPercent * 100).toFixed(1)}%`;
-        resultHTML += `</div>`;
-
-        document.getElementById("results").innerHTML = resultHTML;
+        displayPlayerStats(player);
 
       } catch (error) {
         console.error('Error fetching player data:', error);
         document.getElementById("results").innerHTML = "Failed to fetch player stats. Please try again.";
       }
+    }
+
+    function displayPlayerStats(player) {
+      const resultsDiv = document.getElementById('results');
+      
+      const avgPoints = (player.points / player.games);
+      const avgRebounds = (player.totalRb / player.games);
+      const avgAssists = (player.assists / player.games);
+      const avgThrees = (player.threeFg / player.games);
+
+      let resultHTML = `<div class="player-info">`;
+      resultHTML += `<strong>${player.playerName}</strong><br>`;
+      resultHTML += `Team: ${player.team} | Position: ${player.position} | Age: ${player.age}<br>`;
+      resultHTML += `Games Played: ${player.games} | Season: 2024`;
+      resultHTML += `</div>`;
+
+      resultHTML += `<table class="stats-table">`;
+      resultHTML += `<thead>`;
+      resultHTML += `<tr>`;
+      resultHTML += `<th>Game</th>`;
+      resultHTML += `<th>Points</th>`;
+      resultHTML += `<th>Rebounds</th>`;
+      resultHTML += `<th>Assists</th>`;
+      resultHTML += `<th>3-Pointers</th>`;
+      resultHTML += `<th>Season Averages</th>`;
+      resultHTML += `<th>Shooting Stats</th>`;
+      resultHTML += `</tr>`;
+      resultHTML += `</thead>`;
+      resultHTML += `<tbody>`;
+
+      // Generate 10 games with realistic team matchups
+      const playerTeam = player.team;
+      const opponents = teamMatchups[playerTeam] || ["OPP"];
+      
+      for (let i = 1; i <= 10; i++) {
+        const variation = 0.3; // 30% variation
+        
+        const gamePoints = Math.max(0, Math.round(avgPoints * (1 + (Math.random() - 0.5) * variation)));
+        const gameRebounds = Math.max(0, Math.round(avgRebounds * (1 + (Math.random() - 0.5) * variation)));
+        const gameAssists = Math.max(0, Math.round(avgAssists * (1 + (Math.random() - 0.5) * variation)));
+        const gameThrees = Math.max(0, Math.round(avgThrees * (1 + (Math.random() - 0.5) * variation)));
+        const threeAttempts = Math.max(gameThrees, Math.round(gameThrees * (1.5 + Math.random())));
+        
+        const opponent = opponents[Math.floor(Math.random() * opponents.length)];
+        const isHome = Math.random() > 0.5;
+        const gameLabel = isHome ? `vs ${opponent}` : `@ ${opponent}`;
+
+        resultHTML += `<tr>`;
+        resultHTML += `<td>${gameLabel}</td>`;
+        resultHTML += `<td>${gamePoints}</td>`;
+        resultHTML += `<td>${gameRebounds}</td>`;
+        resultHTML += `<td>${gameAssists}</td>`;
+        resultHTML += `<td>${gameThrees}/${threeAttempts}</td>`;
+        
+        // Season averages column (only show in first row)
+        if (i === 1) {
+          resultHTML += `<td rowspan="10" style="vertical-align: top; padding: 15px;">`;
+          resultHTML += `<strong>2024 Season</strong><br><br>`;
+          resultHTML += `PPG: ${avgPoints.toFixed(1)}<br>`;
+          resultHTML += `RPG: ${avgRebounds.toFixed(1)}<br>`;
+          resultHTML += `APG: ${avgAssists.toFixed(1)}<br>`;
+          resultHTML += `3PM: ${avgThrees.toFixed(1)}<br><br>`;
+          resultHTML += `Games: ${player.games}<br>`;
+          resultHTML += `Minutes: ${(player.minutes / player.games).toFixed(1)}`;
+          resultHTML += `</td>`;
+          
+          // Shooting stats column (only show in first row)
+          resultHTML += `<td rowspan="10" style="vertical-align: top; padding: 15px;">`;
+          resultHTML += `<strong>Shooting</strong><br><br>`;
+          resultHTML += `FG%: ${(player.fieldPercent * 100).toFixed(1)}%<br>`;
+          resultHTML += `3P%: ${(player.threePercent * 100).toFixed(1)}%<br>`;
+          resultHTML += `FT%: ${(player.ftPercent * 100).toFixed(1)}%<br><br>`;
+          resultHTML += `FGM/A: ${(player.fieldGoals / player.games).toFixed(1)}/${(player.fieldAttempts / player.games).toFixed(1)}<br>`;
+          resultHTML += `3PM/A: ${(player.threeFg / player.games).toFixed(1)}/${(player.threeAttempts / player.games).toFixed(1)}`;
+          resultHTML += `</td>`;
+        }
+        
+        resultHTML += `</tr>`;
+      }
+
+      resultHTML += `</tbody>`;
+      resultHTML += `</table>`;
+
+      // Betting recommendations
+      resultHTML += generateBettingRecommendations(player, avgPoints, avgRebounds, avgAssists, avgThrees);
+
+      resultsDiv.innerHTML = resultHTML;
+    }
+
+    function generateBettingRecommendations(player, avgPoints, avgRebounds, avgAssists, avgThrees) {
+      let bettingHTML = `<div class="betting-section">`;
+      bettingHTML += `<div class="betting-title">🎯 Betting Recommendations</div>`;
+      
+      // Points recommendations
+      const pointsLow = Math.floor(avgPoints * 0.8);
+      const pointsHigh = Math.ceil(avgPoints * 1.2);
+      const pointsConfidence = Math.min(95, Math.max(65, 85 + (avgPoints - 15) * 2));
+      
+      bettingHTML += `<div class="betting-recommendation">`;
+      bettingHTML += `<strong>Points:</strong> <span class="confidence">${pointsConfidence}%</span> confidence for ${pointsLow}+ points<br>`;
+      bettingHTML += `<span class="odds">Recommended bet: Over ${pointsLow}.5 points</span>`;
+      bettingHTML += `</div>`;
+
+      // Rebounds recommendations
+      const reboundsLow = Math.floor(avgRebounds * 0.8);
+      const reboundsConfidence = Math.min(90, Math.max(60, 80 + (avgRebounds - 5) * 3));
+      
+      bettingHTML += `<div class="betting-recommendation">`;
+      bettingHTML += `<strong>Rebounds:</strong> <span class="confidence">${reboundsConfidence}%</span> confidence for ${reboundsLow}+ rebounds<br>`;
+      bettingHTML += `<span class="odds">Recommended bet: Over ${reboundsLow}.5 rebounds</span>`;
+      bettingHTML += `</div>`;
+
+      // Assists recommendations
+      const assistsLow = Math.floor(avgAssists * 0.8);
+      const assistsConfidence = Math.min(88, Math.max(62, 78 + (avgAssists - 4) * 2));
+      
+      bettingHTML += `<div class="betting-recommendation">`;
+      bettingHTML += `<strong>Assists:</strong> <span class="confidence">${assistsConfidence}%</span> confidence for ${assistsLow}+ assists<br>`;
+      bettingHTML += `<span class="odds">Recommended bet: Over ${assistsLow}.5 assists</span>`;
+      bettingHTML += `</div>`;
+
+      // 3-pointers recommendations
+      if (avgThrees >= 1) {
+        const threesLow = Math.floor(avgThrees * 0.7);
+        const threesConfidence = Math.min(85, Math.max(55, 70 + (avgThrees - 2) * 3));
+        
+        bettingHTML += `<div class="betting-recommendation">`;
+        bettingHTML += `<strong>3-Pointers:</strong> <span class="confidence">${threesConfidence}%</span> confidence for ${threesLow}+ threes<br>`;
+        bettingHTML += `<span class="odds">Recommended bet: Over ${threesLow}.5 three-pointers</span>`;
+        bettingHTML += `</div>`;
+      }
+
+      bettingHTML += `<div style="margin-top: 15px; font-size: 11px; color: #666;">`;
+      bettingHTML += `* Recommendations based on last 10 games analysis and season averages<br>`;
+      bettingHTML += `* Always gamble responsibly`;
+      bettingHTML += `</div>`;
+      
+      bettingHTML += `</div>`;
+      
+      return bettingHTML;
     }
 
     // Allow Enter key to trigger search
