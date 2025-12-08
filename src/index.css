@@ -1,0 +1,212 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 0 0% 100%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 0% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 0 0% 100%;
+    --success-foreground: 0 0% 0%;
+
+    --warning: 0 0% 70%;
+    --warning-foreground: 0 0% 0%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 12%;
+    --ring: 0 0% 100%;
+
+    --radius: 0px;
+
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: Helvetica, Arial, sans-serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card border border-border;
+  }
+
+  .stat-card {
+    @apply glass-card p-4 flex flex-col items-center justify-center gap-1 transition-all duration-300;
+  }
+
+  .stat-card:hover {
+    @apply bg-secondary;
+  }
+
+  .confidence-bar {
+    @apply h-2 bg-muted overflow-hidden;
+  }
+
+  .confidence-fill {
+    @apply h-full bg-foreground transition-all duration-700 ease-out;
+  }
+
+  .pulse-dot {
+    @apply w-2 h-2 bg-foreground;
+  }
+
+  .search-input {
+    @apply w-full bg-card border border-border px-6 py-4 text-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-all duration-300;
+  }
+
+  .btn-analyze {
+    @apply px-8 py-4 font-semibold bg-foreground text-background border border-foreground transition-all duration-300;
+  }
+
+  .btn-analyze:hover {
+    @apply bg-background text-foreground;
+  }
+
+  .btn-analyze:active {
+    @apply opacity-80;
+  }
+
+  .suggestion-item {
+    @apply px-4 py-3 cursor-pointer flex items-center justify-between transition-colors duration-200 border-b border-border last:border-b-0;
+  }
+
+  .suggestion-item:hover {
+    @apply bg-secondary;
+  }
+
+  .status-badge {
+    @apply px-2 py-0.5 text-xs font-medium flex items-center gap-1;
+  }
+
+  .status-playing {
+    @apply bg-foreground text-background;
+  }
+
+  .status-injured {
+    @apply bg-muted-foreground text-background;
+  }
+
+  .data-table {
+    @apply w-full border-collapse;
+  }
+
+  .data-table th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground bg-secondary;
+  }
+
+  .data-table td {
+    @apply px-4 py-3 text-sm border-b border-border;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  .data-table tbody tr {
+    @apply transition-colors duration-200;
+  }
+
+  .data-table tbody tr:hover {
+    @apply bg-secondary;
+  }
+
+  .betting-card {
+    @apply glass-card p-5 border-l-4 border-l-foreground transition-all duration-300;
+  }
+
+  .betting-card:hover {
+    @apply bg-secondary;
+  }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fadeUp 0.5s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+
+  .text-gradient {
+    @apply text-foreground;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.animate-flash {
+  animation: flash 2s ease-in-out infinite;
+}
