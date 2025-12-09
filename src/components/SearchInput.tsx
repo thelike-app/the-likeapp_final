@@ -203,13 +203,20 @@ export function SearchInput({
           onClick={handleSubmit}
           disabled={!query.trim() || isLoading}
           className={cn(
-            "btn-analyze mt-5 w-full flex items-center justify-center gap-2",
+            "btn-analyze mt-5 w-full flex items-center justify-center gap-2 group",
             (!query.trim() || isLoading) && "opacity-50 cursor-not-allowed"
           )}
         >
           {isLoading ? (
             <>
-              <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground animate-spin" />
+              <div className="relative w-5 h-5">
+                <div className="absolute inset-0 w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground animate-spin group-hover:hidden" />
+                <img
+                  src="/favicon.ico"
+                  alt="Loading"
+                  className="absolute inset-0 w-5 h-5 hidden group-hover:block animate-spin"
+                />
+              </div>
               <span>Analyzing...</span>
             </>
           ) : (

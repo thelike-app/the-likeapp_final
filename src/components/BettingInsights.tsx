@@ -1,8 +1,60 @@
-import { useMemo, useState } from "react";
-import { Lightbulb } from "lucide-react";
+import { useMemo, useState, useRef } from "react";
+import {
+  Lightbulb,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
+  X,
+  MousePointer,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import type { PlayerStatsData } from "@/pages/Index";
+
+// Floating hint component for the interactive tour
+function FloatingHint({
+  children,
+  position = "top",
+  className = "",
+}: {
+  children: React.ReactNode;
+  position?: "top" | "bottom" | "left" | "right";
+  className?: string;
+}) {
+  const positionClasses = {
+    top: "bottom-full left-1/2 -translate-x-1/2 mb-3",
+    bottom: "top-full left-1/2 -translate-x-1/2 mt-3",
+    left: "right-full top-1/2 -translate-y-1/2 mr-3",
+    right: "left-full top-1/2 -translate-y-1/2 ml-3",
+  };
+
+  const arrowClasses = {
+    top: "top-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent border-t-border",
+    bottom:
+      "bottom-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent border-b-border",
+    left: "left-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-border",
+    right:
+      "right-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-border",
+  };
+
+  return (
+    <div
+      className={`absolute z-50 ${positionClasses[position]} animate-fade-in ${className}`}
+    >
+      <div className="bg-card border border-border px-4 py-3 text-sm text-foreground max-w-[240px] text-center shadow-md leading-relaxed">
+        {children}
+      </div>
+      <div
+        className={`absolute w-0 h-0 border-[6px] ${arrowClasses[position]}`}
+      />
+    </div>
+  );
+}
 
 interface BettingInsightsProps {
   player: PlayerStatsData;
@@ -371,8 +423,28 @@ export function BettingInsights({ player, gamesCount }: BettingInsightsProps) {
     );
   }, [player.player_id, reboundsTarget, rebProj.mu, rebProj.size]);
 
+  const [tutorialOpen, setTutorialOpen] = useState(false);
+  const [showTour, setShowTour] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const startTour = () => {
+    setTutorialOpen(false);
+    setShowTour(true);
+    setTimeout(() => {
+      containerRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  };
+
+  const endTour = () => {
+    setShowTour(false);
+  };
+
   return (
     <div
+      ref={containerRef}
       className="glass-card p-6 animate-fade-up"
       style={{ animationDelay: "200ms" }}
     >
@@ -381,11 +453,114 @@ export function BettingInsights({ player, gamesCount }: BettingInsightsProps) {
         <h3 className="text-lg font-semibold">Betting Insights</h3>
       </div>
 
+      {/* Tutorial Section */}
+      <Collapsible
+        open={tutorialOpen}
+        onOpenChange={setTutorialOpen}
+        className="mb-6"
+      >
+        <CollapsibleTrigger asChild>
+          <Button
+            variant="outline"
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <HelpCircle className="w-4 h-4" />
+              <span>How does this work?</span>
+            </div>
+            {tutorialOpen ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-4 space-y-4 text-sm text-muted-foreground border border-border p-4">
+          <div>
+            <h4 className="font-semibold text-foreground mb-2">
+              What is Betting Insights?
+            </h4>
+            <p>
+              Betting Insights uses statistical modeling to estimate the
+              probability of a player achieving specific stat thresholds in
+              their next game. These predictions are based on the player's
+              recent performance data.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-foreground mb-2">
+              How to use the buttons
+            </h4>
+            <ul className="list-disc list-inside space-y-1">
+              <li>
+                <strong>Preset buttons (5, 10, 15...)</strong> — Click to set a
+                target threshold. The confidence bar shows the probability of
+                the player reaching at least that number.
+              </li>
+              <li>
+                <strong>Custom input</strong> — Enter any positive number and
+                click "Set" to calculate the probability for that specific
+                threshold.
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-foreground mb-2">
+              Reading the confidence bar
+            </h4>
+            <p>
+              The percentage shown represents the estimated chance the player
+              will reach or exceed the selected target in their next game.
+              Higher percentages indicate higher confidence.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-foreground mb-2">Note</h4>
+            <p>
+              These are statistical estimates, not guarantees. Use them as one
+              factor among many when making decisions.
+            </p>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+
+      {/* Fixed tour toggle button - bottom right, desktop only */}
+      <div className="fixed bottom-6 right-6 z-[60] hidden md:block">
+        {showTour ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={endTour}
+            className="shadow-lg bg-card border-border flex items-center gap-2"
+          >
+            <X className="w-4 h-4" />
+            End Tour
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={startTour}
+            className="shadow-lg bg-card border-border flex items-center gap-2"
+          >
+            <MousePointer className="w-4 h-4" />
+            Interactive Tour
+          </Button>
+        )}
+      </div>
+
+      {/* Blur overlay when tour is active */}
+      {showTour && (
+        <div className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 pointer-events-none" />
+      )}
+
       {/* Custom probability selectors */}
       <div className="space-y-6 mb-6">
         {/* Points */}
         <div
-          className="betting-card p-4 animate-fade-up"
+          className={`betting-card p-4 animate-fade-up relative ${
+            showTour ? "ring-1 ring-border z-50 bg-card" : ""
+          }`}
           style={{ animationDelay: "250ms" }}
         >
           <div className="flex items-center justify-between mb-3">
@@ -395,17 +570,24 @@ export function BettingInsights({ player, gamesCount }: BettingInsightsProps) {
             </span>
           </div>
           <div className="flex flex-wrap gap-2 mb-3">
-            {pointsOptions.map((opt) => (
-              <Button
-                key={opt}
-                variant={pointsTarget === opt ? "default" : "secondary"}
-                size="sm"
-                onClick={() => setPointsTarget(opt)}
-              >
-                {opt}
-              </Button>
-            ))}
-            <div className="flex items-center gap-2">
+            <div className="relative flex flex-wrap gap-2">
+              {pointsOptions.map((opt) => (
+                <Button
+                  key={opt}
+                  variant={pointsTarget === opt ? "default" : "secondary"}
+                  size="sm"
+                  onClick={() => setPointsTarget(opt)}
+                >
+                  {opt}
+                </Button>
+              ))}
+              {showTour && (
+                <FloatingHint position="top">
+                  Click preset values to quickly set your target threshold
+                </FloatingHint>
+              )}
+            </div>
+            <div className="relative flex items-center gap-2">
               <Input
                 type="text"
                 inputMode="numeric"
@@ -429,9 +611,24 @@ export function BettingInsights({ player, gamesCount }: BettingInsightsProps) {
               >
                 Set
               </Button>
+              {showTour && (
+                <FloatingHint
+                  position="bottom"
+                  className="left-0 translate-x-0"
+                >
+                  Enter any number and click Set for custom targets
+                </FloatingHint>
+              )}
             </div>
           </div>
-          <ConfidenceBar confidence={Math.round(pointsProb * 100)} />
+          <div className="relative">
+            <ConfidenceBar confidence={Math.round(pointsProb * 100)} />
+            {showTour && (
+              <FloatingHint position="right" className="top-0 translate-y-0">
+                Confidence percentage - higher means more likely
+              </FloatingHint>
+            )}
+          </div>
           <p className="text-sm text-muted-foreground mt-2">
             Chance to score at least {pointsTarget} points next game.
           </p>

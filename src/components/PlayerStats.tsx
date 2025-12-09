@@ -2,6 +2,12 @@ import { useState } from "react";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { PlayerStatsData, GameStats } from "@/pages/Index";
 
 interface PlayerStatsProps {
@@ -100,52 +106,101 @@ export function PlayerStats({ player, onGamesCountChange }: PlayerStatsProps) {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-px bg-border border border-border -mt-px">
-        <div className="bg-card p-4 flex flex-col items-center justify-center gap-1">
-          <span className="text-xs text-muted-foreground uppercase tracking-wider">PPG</span>
-          <span className="text-2xl font-bold">{averages.ppg.toFixed(1)}</span>
+      <TooltipProvider delayDuration={0}>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-px bg-border border border-border -mt-px">
+          <div className="bg-card p-4 flex flex-col items-center justify-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-xs text-muted-foreground uppercase tracking-wider cursor-help">PPG</span>
+              </TooltipTrigger>
+              <TooltipContent>Points Per Game</TooltipContent>
+            </Tooltip>
+            <span className="text-2xl font-bold">{averages.ppg.toFixed(1)}</span>
+          </div>
+          <div className="bg-card p-4 flex flex-col items-center justify-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-xs text-muted-foreground uppercase tracking-wider cursor-help">RPG</span>
+              </TooltipTrigger>
+              <TooltipContent>Rebounds Per Game</TooltipContent>
+            </Tooltip>
+            <span className="text-2xl font-bold">{averages.rpg.toFixed(1)}</span>
+          </div>
+          <div className="bg-card p-4 flex flex-col items-center justify-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-xs text-muted-foreground uppercase tracking-wider cursor-help">APG</span>
+              </TooltipTrigger>
+              <TooltipContent>Assists Per Game</TooltipContent>
+            </Tooltip>
+            <span className="text-2xl font-bold">{averages.apg.toFixed(1)}</span>
+          </div>
+          <div className="bg-card p-4 flex flex-col items-center justify-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-xs text-muted-foreground uppercase tracking-wider cursor-help">3PM</span>
+              </TooltipTrigger>
+              <TooltipContent>Three-Pointers Made Per Game</TooltipContent>
+            </Tooltip>
+            <span className="text-2xl font-bold">{averages.threePm.toFixed(1)}</span>
+          </div>
+          <div className="bg-card p-4 flex flex-col items-center justify-center gap-1 col-span-2 sm:col-span-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-xs text-muted-foreground uppercase tracking-wider cursor-help">MPG</span>
+              </TooltipTrigger>
+              <TooltipContent>Minutes Per Game</TooltipContent>
+            </Tooltip>
+            <span className="text-2xl font-bold">{averages.mpg.toFixed(1)}</span>
+          </div>
         </div>
-        <div className="bg-card p-4 flex flex-col items-center justify-center gap-1">
-          <span className="text-xs text-muted-foreground uppercase tracking-wider">RPG</span>
-          <span className="text-2xl font-bold">{averages.rpg.toFixed(1)}</span>
-        </div>
-        <div className="bg-card p-4 flex flex-col items-center justify-center gap-1">
-          <span className="text-xs text-muted-foreground uppercase tracking-wider">APG</span>
-          <span className="text-2xl font-bold">{averages.apg.toFixed(1)}</span>
-        </div>
-        <div className="bg-card p-4 flex flex-col items-center justify-center gap-1">
-          <span className="text-xs text-muted-foreground uppercase tracking-wider">3PM</span>
-          <span className="text-2xl font-bold">{averages.threePm.toFixed(1)}</span>
-        </div>
-        <div className="bg-card p-4 flex flex-col items-center justify-center gap-1 col-span-2 sm:col-span-1">
-          <span className="text-xs text-muted-foreground uppercase tracking-wider">MPG</span>
-          <span className="text-2xl font-bold">{averages.mpg.toFixed(1)}</span>
-        </div>
-      </div>
+      </TooltipProvider>
 
       {/* Shooting Stats */}
       <div className="glass-card p-5">
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
           Shooting Stats
         </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="flex flex-col items-center text-center">
-            <span className="text-xs text-muted-foreground">FG%</span>
-            <span className="text-lg font-bold">{averages.fgPct.toFixed(1)}%</span>
+        <TooltipProvider delayDuration={0}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="flex flex-col items-center text-center">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-xs text-muted-foreground cursor-help">FG%</span>
+                </TooltipTrigger>
+                <TooltipContent>Field Goal Percentage</TooltipContent>
+              </Tooltip>
+              <span className="text-lg font-bold">{averages.fgPct.toFixed(1)}%</span>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-xs text-muted-foreground cursor-help">3P%</span>
+                </TooltipTrigger>
+                <TooltipContent>Three-Point Percentage</TooltipContent>
+              </Tooltip>
+              <span className="text-lg font-bold">{averages.threePct.toFixed(1)}%</span>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-xs text-muted-foreground cursor-help">FT%</span>
+                </TooltipTrigger>
+                <TooltipContent>Free Throw Percentage</TooltipContent>
+              </Tooltip>
+              <span className="text-lg font-bold">{averages.ftPct.toFixed(1)}%</span>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-xs text-muted-foreground cursor-help">Games</span>
+                </TooltipTrigger>
+                <TooltipContent>Total Games Played</TooltipContent>
+              </Tooltip>
+              <span className="text-lg font-bold">{player.games.length}</span>
+            </div>
           </div>
-          <div className="flex flex-col items-center text-center">
-            <span className="text-xs text-muted-foreground">3P%</span>
-            <span className="text-lg font-bold">{averages.threePct.toFixed(1)}%</span>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <span className="text-xs text-muted-foreground">FT%</span>
-            <span className="text-lg font-bold">{averages.ftPct.toFixed(1)}%</span>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <span className="text-xs text-muted-foreground">Games</span>
-            <span className="text-lg font-bold">{player.games.length}</span>
-          </div>
-        </div>
+        </TooltipProvider>
       </div>
 
       {/* Recent Games Table */}
