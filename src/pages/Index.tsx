@@ -189,6 +189,7 @@ const Index = () => {
           <p className="text-xs text-muted-foreground">
             We don't care who you are.
           </p>
+          <p className="text-xs text-muted-foreground">support@like.app</p>
         </footer>
       </div>
     </div>

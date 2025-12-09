@@ -1,5 +1,12 @@
 import { useMemo, useState, useRef } from "react";
-import { Lightbulb, HelpCircle, ChevronDown, ChevronUp, X, MousePointer } from "lucide-react";
+import {
+  Lightbulb,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
+  X,
+  MousePointer,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,17 +17,17 @@ import {
 import type { PlayerStatsData } from "@/pages/Index";
 
 // Floating hint component for the interactive tour - supports tap on mobile
-function FloatingHint({ 
-  children, 
+function FloatingHint({
+  children,
   position = "top",
-  className = "" 
-}: { 
-  children: React.ReactNode; 
+  className = "",
+}: {
+  children: React.ReactNode;
   position?: "top" | "bottom" | "left" | "right";
   className?: string;
 }) {
   const [isVisible, setIsVisible] = useState(false);
-  
+
   const positionClasses = {
     top: "bottom-full left-1/2 -translate-x-1/2 mb-3",
     bottom: "top-full left-1/2 -translate-x-1/2 mt-3",
@@ -30,32 +37,42 @@ function FloatingHint({
 
   const arrowClasses = {
     top: "top-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent border-t-border",
-    bottom: "bottom-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent border-b-border",
+    bottom:
+      "bottom-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent border-b-border",
     left: "left-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-border",
-    right: "right-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-border",
+    right:
+      "right-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-border",
   };
 
   return (
     <>
       {/* Tap target for mobile - invisible overlay */}
-      <div 
+      <div
         className="absolute inset-0 z-40 md:hidden cursor-pointer"
         onClick={() => setIsVisible(!isVisible)}
       />
       {/* Hint content - always visible on desktop (hover handled by parent), toggle on mobile */}
-      <div className={`absolute z-50 ${positionClasses[position]} animate-fade-in ${className} hidden md:block`}>
+      <div
+        className={`absolute z-50 ${positionClasses[position]} animate-fade-in ${className} hidden md:block`}
+      >
         <div className="bg-card border border-border px-4 py-3 text-sm text-foreground max-w-[240px] text-center shadow-md leading-relaxed">
           {children}
         </div>
-        <div className={`absolute w-0 h-0 border-[6px] ${arrowClasses[position]}`} />
+        <div
+          className={`absolute w-0 h-0 border-[6px] ${arrowClasses[position]}`}
+        />
       </div>
       {/* Mobile hint - toggle visibility on tap */}
       {isVisible && (
-        <div className={`absolute z-50 ${positionClasses[position]} animate-fade-in ${className} md:hidden`}>
+        <div
+          className={`absolute z-50 ${positionClasses[position]} animate-fade-in ${className} md:hidden`}
+        >
           <div className="bg-card border border-border px-4 py-3 text-sm text-foreground max-w-[240px] text-center shadow-md leading-relaxed">
             {children}
           </div>
-          <div className={`absolute w-0 h-0 border-[6px] ${arrowClasses[position]}`} />
+          <div
+            className={`absolute w-0 h-0 border-[6px] ${arrowClasses[position]}`}
+          />
         </div>
       )}
     </>
@@ -437,7 +454,10 @@ export function BettingInsights({ player, gamesCount }: BettingInsightsProps) {
     setTutorialOpen(false);
     setShowTour(true);
     setTimeout(() => {
-      containerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      containerRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 100);
   };
 
@@ -457,40 +477,71 @@ export function BettingInsights({ player, gamesCount }: BettingInsightsProps) {
       </div>
 
       {/* Tutorial Section */}
-      <Collapsible open={tutorialOpen} onOpenChange={setTutorialOpen} className="mb-6">
+      <Collapsible
+        open={tutorialOpen}
+        onOpenChange={setTutorialOpen}
+        className="mb-6"
+      >
         <CollapsibleTrigger asChild>
-          <Button variant="outline" className="w-full flex items-center justify-between">
+          <Button
+            variant="outline"
+            className="w-full flex items-center justify-between"
+          >
             <div className="flex items-center gap-2">
               <HelpCircle className="w-4 h-4" />
               <span>How does this work?</span>
             </div>
-            {tutorialOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            {tutorialOpen ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-4 space-y-4 text-sm text-muted-foreground border border-border p-4">
           <div>
-            <h4 className="font-semibold text-foreground mb-2">What is Betting Insights?</h4>
+            <h4 className="font-semibold text-foreground mb-2">
+              What is Betting Insights?
+            </h4>
             <p>
-              Betting Insights uses statistical modeling to estimate the probability of a player achieving specific stat thresholds in their next game. These predictions are based on the player's recent performance data.
+              Betting Insights uses statistical modeling to estimate the
+              probability of a player achieving specific stat thresholds in
+              their next game. These predictions are based on the player's
+              recent performance data.
             </p>
           </div>
           <div>
-            <h4 className="font-semibold text-foreground mb-2">How to use the buttons</h4>
+            <h4 className="font-semibold text-foreground mb-2">
+              How to use the buttons
+            </h4>
             <ul className="list-disc list-inside space-y-1">
-              <li><strong>Preset buttons (5, 10, 15...)</strong> — Click to set a target threshold. The confidence bar shows the probability of the player reaching at least that number.</li>
-              <li><strong>Custom input</strong> — Enter any positive number and click "Set" to calculate the probability for that specific threshold.</li>
+              <li>
+                <strong>Preset buttons (5, 10, 15...)</strong> — Click to set a
+                target threshold. The confidence bar shows the probability of
+                the player reaching at least that number.
+              </li>
+              <li>
+                <strong>Custom input</strong> — Enter any positive number and
+                click "Set" to calculate the probability for that specific
+                threshold.
+              </li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-foreground mb-2">Reading the confidence bar</h4>
+            <h4 className="font-semibold text-foreground mb-2">
+              Reading the confidence bar
+            </h4>
             <p>
-              The percentage shown represents the estimated chance the player will reach or exceed the selected target in their next game. Higher percentages indicate higher confidence.
+              The percentage shown represents the estimated chance the player
+              will reach or exceed the selected target in their next game.
+              Higher percentages indicate higher confidence.
             </p>
           </div>
           <div>
             <h4 className="font-semibold text-foreground mb-2">Note</h4>
             <p>
-              These are statistical estimates, not guarantees. Use them as one factor among many when making decisions.
+              These are statistical estimates, not guarantees. Use them as one
+              factor among many when making decisions.
             </p>
           </div>
         </CollapsibleContent>
@@ -499,20 +550,20 @@ export function BettingInsights({ player, gamesCount }: BettingInsightsProps) {
       {/* Fixed tour toggle button - bottom right, desktop only */}
       <div className="fixed bottom-6 right-6 z-[60] hidden md:block">
         {showTour ? (
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={endTour} 
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={endTour}
             className="shadow-lg bg-card border-border flex items-center gap-2"
           >
             <X className="w-4 h-4" />
             End Tour
           </Button>
         ) : (
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={startTour} 
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={startTour}
             className="shadow-lg bg-card border-border flex items-center gap-2"
           >
             <MousePointer className="w-4 h-4" />
@@ -523,14 +574,21 @@ export function BettingInsights({ player, gamesCount }: BettingInsightsProps) {
 
       {/* Blur overlay when tour is active */}
       {showTour && (
-        <div className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 pointer-events-none" />
+        <div
+          className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 cursor-pointer"
+          onClick={endTour}
+          aria-label="Exit interactive tour"
+          role="button"
+        />
       )}
 
       {/* Custom probability selectors */}
       <div className="space-y-6 mb-6">
         {/* Points */}
         <div
-          className={`betting-card p-4 animate-fade-up relative ${showTour ? 'ring-1 ring-border z-50 bg-card' : ''}`}
+          className={`betting-card p-4 animate-fade-up relative ${
+            showTour ? "ring-1 ring-border z-50 bg-card" : ""
+          }`}
           style={{ animationDelay: "250ms" }}
         >
           <div className="flex items-center justify-between mb-3">
@@ -582,7 +640,10 @@ export function BettingInsights({ player, gamesCount }: BettingInsightsProps) {
                 Set
               </Button>
               {showTour && (
-                <FloatingHint position="bottom" className="left-0 translate-x-0">
+                <FloatingHint
+                  position="bottom"
+                  className="left-0 translate-x-0"
+                >
                   Enter any number and click Set for custom targets
                 </FloatingHint>
               )}
