@@ -4,6 +4,7 @@ import { PlayerStats } from "@/components/PlayerStats";
 import { BettingInsights } from "@/components/BettingInsights";
 import { FootballStats } from "@/components/FootballStats";
 import { SportToggle, type SportType } from "@/components/SportToggle";
+import { Analytics } from "@vercel/analytics/react";
 
 export interface ApiPlayer {
   name: string;
@@ -122,6 +123,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      <Analytics />
       <div
         className={`relative z-10 container mx-auto px-4 max-w-4xl min-h-screen flex flex-col transition-all duration-700 ease-out ${
           hasResults ? "justify-start py-12" : "justify-center"
